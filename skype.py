@@ -10,23 +10,24 @@ for streamer in streamersList:
 
 def print_checkin(participants):
     for elem in skypeClient.BookmarkedChats:  # Looks in bookmarked chats and returns True if chat is found.
+        participantsList = list(participants)
         for member in elem._GetActiveMembers():
             try:
-                participants.remove(member._GetFullName())
+                participantsList.remove(member._GetFullName())
             except:
                 pass
-        if not participants:
+        if not participantsList:
             print "Checking in."
             elem.SendMessage("#checkin")
 
-        for streamer in streamerList:
-            h = httplib2.Http(".cache")
-            resp, content = h.request(streamerList[streamer], "GET")
-            contentObject = content.decode('utf-8')
-            data = json.loads(contentObject) 
-            if (data['stream']):
-                print streamer + "'s stream is up!"
-                elem.SendMessage(streamer + "'s stream is up!")
+            for streamer in streamerList:
+                h = httplib2.Http(".cache")
+                resp, content = h.request(streamerList[streamer], "GET")
+                contentObject = content.decode('utf-8')
+                data = json.loads(contentObject) 
+                if (data['stream']):
+                    print streamer + "'s stream is up!"
+                    elem.SendMessage(streamer + "'s stream is up!")
 
 class TaskThread(threading.Thread):
     """Thread that executes a task every N seconds"""
