@@ -2,7 +2,7 @@ import Skype4Py
 import threading
 import httplib2, json
 
-streamersList = ['Windask','LightBrite','DragonSlayer965', 'Kin_Tsuna', 'iGumdrop', 'OGKhey', 'itsHafu']
+streamersList = ['Windask','LightBrite','DragonSlayer965', 'Kin_Tsuna', 'iGumdrop', 'OGKhey', 'itsHafu', "AkumaLuffy", "nl_Kripp"]
 streamerList = {}
 
 for streamer in streamersList:
@@ -19,14 +19,14 @@ def print_checkin(participants):
             print "Checking in."
             elem.SendMessage("#checkin")
 
-    for streamer in streamerList:
-        h = httplib2.Http(".cache")
-        resp, content = h.request(streamerList[streamer], "GET")
-        contentObject = content.decode('utf-8')
-        data = json.loads(contentObject) 
-        if (data['stream']):
-            print streamer + "'s stream is up!"
-            elem.SendMessage(streamer + "'s stream is up!")
+        for streamer in streamerList:
+            h = httplib2.Http(".cache")
+            resp, content = h.request(streamerList[streamer], "GET")
+            contentObject = content.decode('utf-8')
+            data = json.loads(contentObject) 
+            if (data['stream']):
+                print streamer + "'s stream is up!"
+                elem.SendMessage(streamer + "'s stream is up!")
 
 class TaskThread(threading.Thread):
     """Thread that executes a task every N seconds"""
