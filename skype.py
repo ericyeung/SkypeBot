@@ -1,5 +1,12 @@
 import Skype4Py
 import threading
+import httplib2, json
+
+streamersList = ['Windask','LightBrite','DragonSlayer965', 'Kin_Tsuna', 'iGumdrop', 'OGKhey', 'itsHafu']
+streamerList = {}
+
+for streamer in streamersList:
+    streamerList[streamer] = 'https://api.twitch.tv/kraken/streams/' + streamer
 
 def print_checkin(participants):
     for elem in skypeClient.BookmarkedChats:  # Looks in bookmarked chats and returns True if chat is found.
@@ -11,6 +18,15 @@ def print_checkin(participants):
         if not participants:
             print "Checking in."
             elem.SendMessage("#checkin")
+
+    for streamer in streamerList:
+        h = httplib2.Http(".cache")
+        resp, content = h.request(streamerList[streamer], "GET")
+        contentObject = content.decode('utf-8')
+        data = json.loads(contentObject) 
+        if (data['stream']):
+            print streamer + "'s stream is up!"
+            elem.SendMessage(streamer + "'s stream is up!")
 
 class TaskThread(threading.Thread):
     """Thread that executes a task every N seconds"""
