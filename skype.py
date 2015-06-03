@@ -27,7 +27,7 @@ def print_checkin(participants):
                 data = json.loads(contentObject) 
                 if (data['stream']):
                     print streamer + "'s stream is up!"
-                    elem.SendMessage(streamer + "'s stream is up!")
+                    elem.SendMessage(streamer + "'s stream is up! - http://www.twitch.tv/" + streamer)
 
 class TaskThread(threading.Thread):
     """Thread that executes a task every N seconds"""
