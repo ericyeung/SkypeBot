@@ -19,6 +19,8 @@ def print_checkin(participants):
         if not participantsList:
             print "Checking in."
             elem.SendMessage("#checkin")
+            time.sleep(0.5)
+            elem.SendMessage("I am a bot")
 
             for streamer in streamerList:
                 h = httplib2.Http(".cache")
