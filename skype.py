@@ -50,6 +50,7 @@ def cmd_test(Message):
     time.sleep(1.)
     print "Testing complete.\n"
 
+
 class TaskThread(threading.Thread):
     """Thread that executes a task every N seconds"""
     
@@ -82,3 +83,4 @@ skypeClient.OnMessageStatus = commands
 
 task =TaskThread(print_checkin, members)
 task.run()
+    
