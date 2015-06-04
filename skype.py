@@ -73,7 +73,7 @@ class TaskThread(threading.Thread):
 
 # Type in members of the groups you want to checkin with. 
 #Eg. members = ['John Doe'] will #checkin to all favourited groups who have John Doe
-members = []
+members = [windaskk]
 
 # Create an instance of the Skype class.
 skypeClient = Skype4Py.Skype()
