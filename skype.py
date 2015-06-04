@@ -20,7 +20,6 @@ def print_checkin(participants):
         if not participantsList:
             print "Checking in."
             elem.SendMessage("#checkin")
-            time.sleep(0.5)
             elem.SendMessage("I am a bot")
 
             for streamer in streamerList:
@@ -51,6 +50,8 @@ def cmd_test(Message):
     time.sleep(1.)
     print "Testing complete.\n"
 
+skype.OnMessageStatus = commands 
+
 class TaskThread(threading.Thread):
     """Thread that executes a task every N seconds"""
     
@@ -73,7 +74,7 @@ class TaskThread(threading.Thread):
 
 # Type in members of the groups you want to checkin with. 
 #Eg. members = ['John Doe'] will #checkin to all favourited groups who have John Doe
-members = ['windaskk']
+members = []
 
 # Create an instance of the Skype class.
 skypeClient = Skype4Py.Skype()
