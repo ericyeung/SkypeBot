@@ -42,15 +42,13 @@ def commands(Message, Status):
         pass
 
 def cmd_test(Message):
-	Message.Chat.SendMessage('Robot: Testing1')
-	time.sleep(1.)
-	Message.Chat.SendMessage('Robot: Testing2')
+    Message.Chat.SendMessage('Robot: Testing1')
     time.sleep(1.)
-	Message.Chat.SendMessage('Robot: Testing3')
+    Message.Chat.SendMessage('Robot: Testing2')
+    time.sleep(1.)
+    Message.Chat.SendMessage('Robot: Testing3')
     time.sleep(1.)
     print "Testing complete.\n"
-
-skype.OnMessageStatus = commands 
 
 class TaskThread(threading.Thread):
     """Thread that executes a task every N seconds"""
@@ -79,6 +77,8 @@ members = []
 # Create an instance of the Skype class.
 skypeClient = Skype4Py.Skype()
 skypeClient.Attach()
+
+skypeClient.OnMessageStatus = commands 
 
 task =TaskThread(print_checkin, members)
 task.run()
