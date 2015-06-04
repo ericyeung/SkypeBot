@@ -29,6 +29,26 @@ def print_checkin(participants):
                     print streamer + "'s stream is up!"
                     elem.SendMessage(streamer + "'s stream is up! - http://www.twitch.tv/" + streamer)
 
+import time
+def commands(Message, Status):
+    if Status == 'SENT' or (Status == 'RECEIVED'):
+        if Message.Body == "#test":
+            cmd_test(Message)
+        
+        else:
+            pass
+    else:
+        pass
+
+def cmd_test(Message):
+	Message.Chat.SendMessage('Robot: Testing1')
+	time.sleep(1.)
+	Message.Chat.SendMessage('Robot: Testing2')
+    time.sleep(1.)
+	Message.Chat.SendMessage('Robot: Testing3')
+    time.sleep(1.)
+    print "Testing complete.\n"
+
 class TaskThread(threading.Thread):
     """Thread that executes a task every N seconds"""
     
