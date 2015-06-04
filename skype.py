@@ -3,7 +3,7 @@ import threading
 import httplib2, json
 import time
 
-streamersList = ['LightBrite', 'iGumdrop', 'itsHafu', "nl_Kripp"]
+streamersList = ['LightBrite', 'iGumdrop', 'itsHafu', "nl_Kripp","reynad27","BehkuhTV","morberplz","LoLNatsumii"]
 streamerList = {}
 
 for streamer in streamersList:
