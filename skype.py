@@ -1,6 +1,7 @@
 import Skype4Py
 import threading
 import httplib2, json
+import time
 
 streamersList = ['LightBrite', 'iGumdrop', 'itsHafu', "nl_Kripp"]
 streamerList = {}
@@ -31,7 +32,6 @@ def print_checkin(participants):
                     print streamer + "'s stream is up!"
                     elem.SendMessage(streamer + "'s stream is up! - http://www.twitch.tv/" + streamer)
 
-import time
 def commands(Message, Status):
     if Status == 'SENT' or (Status == 'RECEIVED'):
         if Message.Body == "#test":
