@@ -2,7 +2,7 @@ import Skype4Py
 import threading
 import httplib2, json
 
-streamersList = ['Windask','LightBrite','DragonSlayer965', 'Kin_Tsuna', 'iGumdrop', 'OGKhey', 'itsHafu', "AkumaLuffy", "nl_Kripp"]
+streamersList = ['LightBrite', 'iGumdrop', 'itsHafu', "nl_Kripp"]
 streamerList = {}
 
 for streamer in streamersList:
