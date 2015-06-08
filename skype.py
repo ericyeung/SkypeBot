@@ -1,33 +1,71 @@
 import Skype4Py
 import threading
 import httplib2, json
-
-streamersList = ['Windask','LightBrite','DragonSlayer965', 'Kin_Tsuna', 'iGumdrop', 'OGKhey', 'itsHafu', "AkumaLuffy", "nl_Kripp"]
-streamerList = {}
-
-for streamer in streamersList:
-    streamerList[streamer] = 'https://api.twitch.tv/kraken/streams/' + streamer
+from datetime import datetime
+from answer_ball import get8BallAnswer
+from streamers_list import streamersList, streamerList, addStreamer
 
 def print_checkin(participants):
-    for elem in skypeClient.BookmarkedChats:  # Looks in bookmarked chats and returns True if chat is found.
-        participantsList = list(participants)
-        for member in elem._GetActiveMembers():
+    for elem in skypeClient.BookmarkedChats:  # Looks in bookmarked chats and returns a list of all bookmarked chats
+        if getIfValidGroup(participants, elem._GetActiveMembers()):
+            print("Checking in.")
+            elem.SendMessage("#checkin")
+            getLive(elem)
+
+def getIfValidGroup(white_list, group_participants):
+    participantsList = list(white_list)
+    for member in group_participants:
             try:
                 participantsList.remove(member._GetFullName())
             except:
                 pass
-        if not participantsList:
-            print "Checking in."
-            elem.SendMessage("#checkin")
+    return not participantsList
 
-            for streamer in streamerList:
-                h = httplib2.Http(".cache")
-                resp, content = h.request(streamerList[streamer], "GET")
-                contentObject = content.decode('utf-8')
-                data = json.loads(contentObject) 
-                if (data['stream']):
-                    print streamer + "'s stream is up!"
-                    elem.SendMessage(streamer + "'s stream is up! - http://www.twitch.tv/" + streamer)
+def getLive(elem):
+    numLiveStreamers = 0
+    for streamer in streamerList:
+        h = httplib2.Http()
+        resp, content = h.request(streamerList[streamer], "GET")
+        try:
+            contentObject = content.decode('utf-8')
+            data = json.loads(contentObject) 
+            if (data['stream']):
+                elem.SendMessage(streamer + "'s stream is up! - http://www.twitch.tv/" + streamer)
+                numLiveStreamers += 1
+        except:
+            pass
+    if numLiveStreamers == 0:
+        elem.SendMessage("No streamers are up! D:")
+
+def Commands(Message, Status):
+    if Status == "SENT" or Status == "RECEIVED":
+        for elem in skypeClient.BookmarkedChats:
+            message = Message.Body.lower()
+            print(message)
+            if Message.Chat == elem:
+                if message == "%help":
+                    elem.SendMessage(" >> %time - Gets the current time(To be formatted)")
+                    elem.SendMessage(" >> %live - Gets the livestreamers.")
+                    elem.SendMessage(" >> %8ball - Need an answer? Consult 8Ball.")
+                    elem.SendMessage(" >> %streamers - Gives a list of streamers currently being polled.")
+                    elem.SendMessage(" >> %addstreamer - Adds a streamer to the list of watched streamers")
+                elif message == "%time":
+                    elem.SendMessage(" >> " + datetime.now().strftime("%Y-%m-%d %H:%M %Z"))
+                elif message == "%live":
+                    getLive(elem)
+                elif message.startswith("%8ball"):
+                    elem.SendMessage(" >> " + get8BallAnswer() + ".")
+                elif message == "%streamers":
+                    elem.SendMessage(" >> " + ", ".join(streamersList))
+                elif message.startswith("%addstreamer"):
+                    splitMessage = message.split(" ")
+                    if (len(splitMessage) == 2):
+                        elem.SendMessage(" >> " + splitMessage[1] + " added to list.")
+                        addStreamer(splitMessage[1])
+                    else:
+                        elem.SendMessage(" >> Invalid format.  %addstreamer [StreamerChannel]")
+                elif message.startswith("%"):
+                    elem.SendMessage(" >> Invalid command. Type in %help for assistance.")
 
 class TaskThread(threading.Thread):
     """Thread that executes a task every N seconds"""
@@ -55,7 +93,11 @@ members = []
 
 # Create an instance of the Skype class.
 skypeClient = Skype4Py.Skype()
+skypeClient.OnMessageStatus = Commands
 skypeClient.Attach()
 
-task =TaskThread(print_checkin, members)
+task = TaskThread(print_checkin, members)
 task.run()
+
+while True: # Infinite loop to catch commands
+    pass
