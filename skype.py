@@ -50,6 +50,7 @@ def Commands(Message, Status):
                         elem.SendMessage(" >> %8ball - Need an answer? Consult 8Ball. %8ball [question]")
                         elem.SendMessage(" >> %streamers - Gives a list of streamers currently being polled.")
                         elem.SendMessage(" >> %addstreamer - Adds a streamer to the list of watched streamers. %addstreamer [streamer's channel]")
+                        elem.SendMessage(" >> %message - Shows the message of the day.")
                     elif message == "%time":
                         elem.SendMessage(" >> " + datetime.now().strftime("%Y-%m-%d %H:%M %Z"))
                     elif message == "%live":
@@ -59,12 +60,21 @@ def Commands(Message, Status):
                     elif message == "%streamers":
                         elem.SendMessage(" >> " + ", ".join(streamersList))
                     elif message.startswith("%addstreamer"):
-                        splitMessage = message.split(" ")
+                        splitMessage = message.strip().split(" ")
                         if (len(splitMessage) == 2):
                             elem.SendMessage(" >> " + splitMessage[1] + " added to list.")
                             addStreamer(splitMessage[1])
                         else:
                             elem.SendMessage(" >> Invalid format.  %addstreamer [StreamerChannel]")
+                    elif message == "%message":
+                        f = open('MOTD.txt', 'r').read()
+                        elem.SendMessage(" >> Today's message is: " + f)
+                    elif message.startswith("%message"):
+                        newMessage = message[message.find('%message ')+9:].decode('utf-8')
+                        if(newMessage):
+                            f = open('MOTD.txt', 'w')
+                            f.write(newMessage)
+                            elem.SendMessage(" >> Today's message is: " + newMessage)
                     elif message.startswith("%"):
                         elem.SendMessage(" >> Invalid command. Type in %help for assistance.")
 
