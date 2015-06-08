@@ -40,32 +40,33 @@ def getLive(elem):
 def Commands(Message, Status):
     if Status == "SENT" or Status == "RECEIVED":
         for elem in skypeClient.BookmarkedChats:
-            message = Message.Body.lower()
-            print(message)
-            if Message.Chat == elem:
-                if message == "%help":
-                    elem.SendMessage(" >> %time - Gets the current time(To be formatted)")
-                    elem.SendMessage(" >> %live - Gets the livestreamers.")
-                    elem.SendMessage(" >> %8ball - Need an answer? Consult 8Ball.")
-                    elem.SendMessage(" >> %streamers - Gives a list of streamers currently being polled.")
-                    elem.SendMessage(" >> %addstreamer - Adds a streamer to the list of watched streamers")
-                elif message == "%time":
-                    elem.SendMessage(" >> " + datetime.now().strftime("%Y-%m-%d %H:%M %Z"))
-                elif message == "%live":
-                    getLive(elem)
-                elif message.startswith("%8ball"):
-                    elem.SendMessage(" >> " + get8BallAnswer() + ".")
-                elif message == "%streamers":
-                    elem.SendMessage(" >> " + ", ".join(streamersList))
-                elif message.startswith("%addstreamer"):
-                    splitMessage = message.split(" ")
-                    if (len(splitMessage) == 2):
-                        elem.SendMessage(" >> " + splitMessage[1] + " added to list.")
-                        addStreamer(splitMessage[1])
-                    else:
-                        elem.SendMessage(" >> Invalid format.  %addstreamer [StreamerChannel]")
-                elif message.startswith("%"):
-                    elem.SendMessage(" >> Invalid command. Type in %help for assistance.")
+            if getIfValidGroup(members, elem._GetActiveMembers()):
+                message = Message.Body.lower()
+                print(message)
+                if Message.Chat == elem:
+                    if message == "%help":
+                        elem.SendMessage(" >> %time - Gets the current time(To be formatted)")
+                        elem.SendMessage(" >> %live - Gets the livestreamers.")
+                        elem.SendMessage(" >> %8ball - Need an answer? Consult 8Ball. %8ball [question]")
+                        elem.SendMessage(" >> %streamers - Gives a list of streamers currently being polled.")
+                        elem.SendMessage(" >> %addstreamer - Adds a streamer to the list of watched streamers. %addstreamer [streamer's channel]")
+                    elif message == "%time":
+                        elem.SendMessage(" >> " + datetime.now().strftime("%Y-%m-%d %H:%M %Z"))
+                    elif message == "%live":
+                        getLive(elem)
+                    elif message.startswith("%8ball"):
+                        elem.SendMessage(" >> " + get8BallAnswer() + ".")
+                    elif message == "%streamers":
+                        elem.SendMessage(" >> " + ", ".join(streamersList))
+                    elif message.startswith("%addstreamer"):
+                        splitMessage = message.split(" ")
+                        if (len(splitMessage) == 2):
+                            elem.SendMessage(" >> " + splitMessage[1] + " added to list.")
+                            addStreamer(splitMessage[1])
+                        else:
+                            elem.SendMessage(" >> Invalid format.  %addstreamer [StreamerChannel]")
+                    elif message.startswith("%"):
+                        elem.SendMessage(" >> Invalid command. Type in %help for assistance.")
 
 class TaskThread(threading.Thread):
     """Thread that executes a task every N seconds"""
