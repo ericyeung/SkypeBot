@@ -1,3 +1,5 @@
+# -*- coding: utf-8 -*-
+
 import Skype4Py
 import threading
 import httplib2, json
@@ -11,8 +13,20 @@ def print_checkin(participants):
             print("Checking in.")
             f = open('MOTD.txt', 'r').read()
             elem.SendMessage(" >> Today's message is: " + f)
+            elem.SendMessage(getTemperature("Toronto","CA"))
             elem.SendMessage("#checkin")
-            getLive(elem)
+            getLive(elem)    
+
+
+def getTemperature(city, country):
+    print('http://api.openweathermap.org/data/2.5/weather?q='+city+","+country)
+    resp, content = h.request('http://api.openweathermap.org/data/2.5/weather?q='+city+","+country, "GET")
+    try:
+        contentObject = content.decode('utf-8')
+        data = json.loads(contentObject) 
+        return (" >> " + city.title() + "'s current temperature is: " + str(round((data['main']['temp'] - 273.15), 0)) + u" °C")
+    except:
+        return "Unable to get weather data."
 
 def getIfValidGroup(white_list, group_participants):
     participantsList = list(white_list)
@@ -26,7 +40,6 @@ def getIfValidGroup(white_list, group_participants):
 def getLive(elem):
     numLiveStreamers = 0
     for streamer in streamerList:
-        h = httplib2.Http()
         resp, content = h.request(streamerList[streamer], "GET")
         try:
             contentObject = content.decode('utf-8')
@@ -52,7 +65,9 @@ def Commands(Message, Status):
                         elem.SendMessage(" >> %8ball - Need an answer? Consult 8Ball. %8ball [question]")
                         elem.SendMessage(" >> %streamers - Gives a list of streamers currently being polled.")
                         elem.SendMessage(" >> %addstreamer - Adds a streamer to the list of watched streamers. %addstreamer [streamer's channel]")
+                        elem.SendMessage(" >> %removestreamer - Removes a streamer to the list of watched streamers. %removestreamer [streamer's channel]")
                         elem.SendMessage(" >> %message [optional message]- Shows/Modifies the message of the day.")
+                        elem.SendMessage(" >> %weather [city] [country] - Gets the weather for a city in a country.")
                     elif message == "%time":
                         elem.SendMessage(" >> " + datetime.now().strftime("%Y-%m-%d %H:%M %Z"))
                     elif message == "%live":
@@ -84,6 +99,12 @@ def Commands(Message, Status):
                     elif message == "%message":
                         f = open('MOTD.txt', 'r').read()
                         elem.SendMessage(" >> Today's message is: " + f)
+                    elif message.startswith("%weather"):
+                        splitMessage = message.strip().split(" ")
+                        if (len(splitMessage) == 3):
+                            elem.SendMessage(getTemperature(splitMessage[1], splitMessage[2]))
+                        else:
+                            elem.SendMessage(" >> Invalid format.  %weather [City] [Country]")
                     elif message.startswith("%message"):
                         newMessage = message[message.find('%message ')+9:].decode('utf-8')
                         if(newMessage):
@@ -113,6 +134,7 @@ class TaskThread(threading.Thread):
             self.task(self.args)
             self._finished.wait(self._interval)
 
+h = httplib2.Http()
 # Type in members of the groups you want to checkin with. 
 #Eg. members = ['John Doe'] will #checkin to all favourited groups who have John Doe
 members = []
