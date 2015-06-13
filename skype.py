@@ -3,12 +3,14 @@ import threading
 import httplib2, json
 from datetime import datetime
 from answer_ball import get8BallAnswer
-from streamers_list import streamersList, streamerList, addStreamer
+from streamers_list import streamerList, addStreamer, removeStreamer
 
 def print_checkin(participants):
     for elem in skypeClient.BookmarkedChats:  # Looks in bookmarked chats and returns a list of all bookmarked chats
         if getIfValidGroup(participants, elem._GetActiveMembers()):
             print("Checking in.")
+            f = open('MOTD.txt', 'r').read()
+            elem.SendMessage(" >> Today's message is: " + f)
             elem.SendMessage("#checkin")
             getLive(elem)
 
@@ -50,7 +52,7 @@ def Commands(Message, Status):
                         elem.SendMessage(" >> %8ball - Need an answer? Consult 8Ball. %8ball [question]")
                         elem.SendMessage(" >> %streamers - Gives a list of streamers currently being polled.")
                         elem.SendMessage(" >> %addstreamer - Adds a streamer to the list of watched streamers. %addstreamer [streamer's channel]")
-                        elem.SendMessage(" >> %message - Shows the message of the day.")
+                        elem.SendMessage(" >> %message [optional message]- Shows/Modifies the message of the day.")
                     elif message == "%time":
                         elem.SendMessage(" >> " + datetime.now().strftime("%Y-%m-%d %H:%M %Z"))
                     elif message == "%live":
@@ -58,14 +60,27 @@ def Commands(Message, Status):
                     elif message.startswith("%8ball"):
                         elem.SendMessage(" >> " + get8BallAnswer() + ".")
                     elif message == "%streamers":
-                        elem.SendMessage(" >> " + ", ".join(streamersList))
+                        elem.SendMessage(" >> " + ", ".join(sorted(streamerList.keys())))
                     elif message.startswith("%addstreamer"):
                         splitMessage = message.strip().split(" ")
                         if (len(splitMessage) == 2):
-                            elem.SendMessage(" >> " + splitMessage[1] + " added to list.")
-                            addStreamer(splitMessage[1])
+                            resp, message = addStreamer(splitMessage[1])
+                            if (resp):
+                                elem.SendMessage(" >> " + splitMessage[1] + " added to list.")
+                            else:
+                                elem.SendMessage(" >> " + message)
                         else:
                             elem.SendMessage(" >> Invalid format.  %addstreamer [StreamerChannel]")
+                    elif message.startswith("%removestreamer"):
+                        splitMessage = message.strip().split(" ")
+                        if (len(splitMessage) == 2):
+                            resp = removeStreamer(splitMessage[1]);
+                            if resp:
+                                elem.SendMessage(" >> " + splitMessage[1] + " removed from the list.")
+                            else:
+                                elem.SendMessage(" >> " + splitMessage[1] + " was not on the list.")
+                        else:
+                            elem.SendMessage(" >> Invalid format.  %removestreamer [StreamerChannel]")
                     elif message == "%message":
                         f = open('MOTD.txt', 'r').read()
                         elem.SendMessage(" >> Today's message is: " + f)
