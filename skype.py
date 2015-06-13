@@ -64,8 +64,8 @@ def Commands(Message, Status):
                         elem.SendMessage(" >> %live - Gets the livestreamers.")
                         elem.SendMessage(" >> %8ball - Need an answer? Consult 8Ball. %8ball [question]")
                         elem.SendMessage(" >> %streamers - Gives a list of streamers currently being polled.")
-                        elem.SendMessage(" >> %addstreamer - Adds a streamer to the list of watched streamers. %addstreamer [streamer's channel]")
-                        elem.SendMessage(" >> %removestreamer - Removes a streamer to the list of watched streamers. %removestreamer [streamer's channel]")
+                        elem.SendMessage(" >> %addstreamer [streamer's channel] - Adds a streamer to the list of watched streamers.")
+                        elem.SendMessage(" >> %removestreamer [streamer's channel] - Removes a streamer to the list of watched streamers.")
                         elem.SendMessage(" >> %message [optional message]- Shows/Modifies the message of the day.")
                         elem.SendMessage(" >> %weather [city] [country] - Gets the weather for a city in a country.")
                     elif message == "%time":
