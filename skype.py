@@ -62,7 +62,7 @@ def Commands(Message, Status):
                     if message == "%help":
                         elem.SendMessage(" >> %time - Gets the current time(To be formatted)")
                         elem.SendMessage(" >> %live - Gets the livestreamers.")
-                        elem.SendMessage(" >> %8ball - Need an answer? Consult 8Ball. %8ball [question]")
+                        elem.SendMessage(" >> %8ball [question] - Need an answer? Consult 8Ball.")
                         elem.SendMessage(" >> %streamers - Gives a list of streamers currently being polled.")
                         elem.SendMessage(" >> %addstreamer [streamer's channel] - Adds a streamer to the list of watched streamers.")
                         elem.SendMessage(" >> %removestreamer [streamer's channel] - Removes a streamer to the list of watched streamers.")
