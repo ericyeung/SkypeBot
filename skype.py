@@ -111,6 +111,11 @@ def Commands(Message, Status):
                             f = open('MOTD.txt', 'w')
                             f.write(newMessage)
                             elem.SendMessage(" >> Today's message is: " + newMessage)
+                    elif message.startswith("%csgo"):
+                        elem.SendMessage("GOGOGOGOGOGGO")
+                        elem.SendMessage("GOGOGOGOGOGGO")
+                        elem.SendMessage("GOGOGOGOGOGGO")
+                        elem.SendMessage("GOGOGOGOGOGGO")
                     elif message.startswith("%"):
                         elem.SendMessage(" >> Invalid command. Type in %help for assistance.")
 
