@@ -1,11 +1,11 @@
-# -*- coding: utf-8 -*-
-
 import Skype4Py
 import threading
 import httplib2, json
 from datetime import datetime
 from answer_ball import get8BallAnswer
 from streamers_list import streamerList, addStreamer, removeStreamer
+from weather import getTemperature
+from help import getHelpMessages
 
 def print_checkin(participants):
     for elem in skypeClient.BookmarkedChats:  # Looks in bookmarked chats and returns a list of all bookmarked chats
@@ -15,59 +15,51 @@ def print_checkin(participants):
             elem.SendMessage(" >> Today's message is: " + f)
             elem.SendMessage(getTemperature("Toronto","CA"))
             elem.SendMessage("#checkin")
-            getLive(elem)    
-
-
-def getTemperature(city, country):
-    print('http://api.openweathermap.org/data/2.5/weather?q='+city+","+country)
-    resp, content = h.request('http://api.openweathermap.org/data/2.5/weather?q='+city+","+country, "GET")
-    try:
-        contentObject = content.decode('utf-8')
-        data = json.loads(contentObject) 
-        return (" >> " + city.title() + "'s current temperature is: " + str(round((data['main']['temp'] - 273.15), 0)) + u" °C")
-    except:
-        return "Unable to get weather data."
+            getLive(elem)
 
 def getIfValidGroup(white_list, group_participants):
     participantsList = list(white_list)
     for member in group_participants:
-            try:
-                participantsList.remove(member._GetFullName())
-            except:
-                pass
+        try:
+            participantsList.remove(member._GetFullName())
+        except:
+            pass
     return not participantsList
 
 def getLive(elem):
-    numLiveStreamers = 0
-    for streamer in streamerList:
-        resp, content = h.request(streamerList[streamer], "GET")
-        try:
-            contentObject = content.decode('utf-8')
-            data = json.loads(contentObject) 
-            if (data['stream']):
-                elem.SendMessage(streamer + "'s stream is up! - http://www.twitch.tv/" + streamer)
-                numLiveStreamers += 1
-        except:
-            pass
-    if numLiveStreamers == 0:
+    numLiveStreamers = {'value': 0}
+    threads = []
+    for streamer in sorted(streamerList):
+        thread = threading.Thread(target=queryStreamer, args=[elem, streamer, streamerList, numLiveStreamers])
+        thread.start()
+        threads.append(thread)
+    for thread in threads:
+        thread.join()
+    if numLiveStreamers['value'] == 0:
         elem.SendMessage("No streamers are up! D:")
+
+def queryStreamer(elem, streamer, streamerList, numLiveStreamers):
+    try:
+        h = httplib2.Http()
+        resp, content = h.request(streamerList[streamer], "GET")
+        contentObject = content.decode('utf-8')
+        data = json.loads(contentObject) 
+        if (data['stream']):
+            elem.SendMessage(streamer + "'s stream is up! - http://www.twitch.tv/" + streamer)
+            numLiveStreamers['value'] += 1
+    except:
+        pass
 
 def Commands(Message, Status):
     if Status == "SENT" or Status == "RECEIVED":
         for elem in skypeClient.BookmarkedChats:
             if getIfValidGroup(members, elem._GetActiveMembers()):
                 message = Message.Body.lower()
-                print(message)
+                print(Message.Body)
                 if Message.Chat == elem:
                     if message == "%help":
-                        elem.SendMessage(" >> %time - Gets the current time(To be formatted)")
-                        elem.SendMessage(" >> %live - Gets the livestreamers.")
-                        elem.SendMessage(" >> %8ball [question] - Need an answer? Consult 8Ball.")
-                        elem.SendMessage(" >> %streamers - Gives a list of streamers currently being polled.")
-                        elem.SendMessage(" >> %addstreamer [streamer's channel] - Adds a streamer to the list of watched streamers.")
-                        elem.SendMessage(" >> %removestreamer [streamer's channel] - Removes a streamer to the list of watched streamers.")
-                        elem.SendMessage(" >> %message [optional message]- Shows/Modifies the message of the day.")
-                        elem.SendMessage(" >> %weather [city] [country] - Gets the weather for a city in a country.")
+                        for message in getHelpMessages():
+                            elem.SendMessage(message)
                     elif message == "%time":
                         elem.SendMessage(" >> " + datetime.now().strftime("%Y-%m-%d %H:%M %Z"))
                     elif message == "%live":
@@ -112,10 +104,8 @@ def Commands(Message, Status):
                             f.write(newMessage)
                             elem.SendMessage(" >> Today's message is: " + newMessage)
                     elif message.startswith("%csgo"):
-                        elem.SendMessage("GOGOGOGOGOGGO")
-                        elem.SendMessage("GOGOGOGOGOGGO")
-                        elem.SendMessage("GOGOGOGOGOGGO")
-                        elem.SendMessage("GOGOGOGOGOGGO")
+                        for i in range(4):
+                            elem.SendMessage("GOGOGOGOGOGGO")
                     elif message.startswith("%"):
                         elem.SendMessage(" >> Invalid command. Type in %help for assistance.")
 
@@ -139,7 +129,6 @@ class TaskThread(threading.Thread):
             self.task(self.args)
             self._finished.wait(self._interval)
 
-h = httplib2.Http()
 # Type in members of the groups you want to checkin with. 
 #Eg. members = ['John Doe'] will #checkin to all favourited groups who have John Doe
 members = []
