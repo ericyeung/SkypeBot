@@ -2,13 +2,11 @@ import httplib2, json
 
 endpoint = 'https://api.twitch.tv/kraken/streams/'
 
-
 def addStreamer(streamer):
 	if streamer.lower() in streamerList:
 		return False, "Streamer is already on the list."
-	h = httplib2.Http()
-	resp, content = h.request(endpoint + streamer,  "GET")
 	try:
+		resp, content = httplib2.Http().request(endpoint + streamer,  "GET")
 		contentObject = content.decode('utf-8')
 		data = json.loads(contentObject) 
 		if ("stream" in data):
@@ -18,7 +16,7 @@ def addStreamer(streamer):
 		else:
 			return False, "Channel does not exist."
 	except:
-		pass
+		return False, "Internal error."
 
 def removeStreamer(streamer):
 	if streamer.lower() in streamerList:
