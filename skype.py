@@ -7,13 +7,13 @@ from answer_ball import get8BallAnswer
 from streamers_list import streamerList, addStreamer, removeStreamer
 from weather import getTemperature
 from help import getHelpMessages
+from files import tryReading
 
 def print_checkin(participants):
     for chat in skypeClient.BookmarkedChats:  # Looks in bookmarked chats and returns a list of all bookmarked chats
         if getIfValidGroup(participants, chat._GetActiveMembers()):
             print("Checking in.")
-            f = open('MOTD.txt', 'r').read()
-            chat.SendMessage(" >> Today's message is: " + f)
+            chat.SendMessage(" >> Today's message is: " + tryReading('MOTD.txt').read())
             chat.SendMessage(getTemperature("Toronto","CA"))
             chat.SendMessage("#checkin")
             getLive(chat)
@@ -55,7 +55,8 @@ def Commands(Message, Status):
         for chat in skypeClient.BookmarkedChats:
             if getIfValidGroup(members, chat._GetActiveMembers()):
                 message = Message.Body.lower()
-                print(Message.Body)
+                messageUpper = Message.Body
+                print(messageUpper)
                 if Message.Chat == chat:
                     if message == "%help":
                         for message in getHelpMessages():
@@ -69,7 +70,7 @@ def Commands(Message, Status):
                     elif message == "%streamers":
                         chat.SendMessage(" >> " + ", ".join(sorted(streamerList.keys())))
                     elif message.startswith("%addstreamer"):
-                        splitMessage = message.strip().split(" ")
+                        splitMessage = messageUpper.strip().split(" ")
                         if (len(splitMessage) == 2):
                             resp, message = addStreamer(splitMessage[1])
                             if (resp):
@@ -89,8 +90,7 @@ def Commands(Message, Status):
                         else:
                             chat.SendMessage(" >> Invalid format.  %removestreamer [StreamerChannel]")
                     elif message == "%message":
-                        f = open('MOTD.txt', 'r').read()
-                        chat.SendMessage(" >> Today's message is: " + f)
+                        chat.SendMessage(" >> Today's message is: " + tryReading('MOTD.txt').read())
                     elif message.startswith("%weather"):
                         splitMessage = message.strip().split(" ")
                         if (len(splitMessage) == 3):
@@ -98,7 +98,7 @@ def Commands(Message, Status):
                         else:
                             chat.SendMessage(" >> Invalid format.  %weather [City] [Country]")
                     elif message.startswith("%message"):
-                        newMessage = message[message.find('%message ')+9:].decode('utf-8')
+                        newMessage = messageUpper[messageUpper.find('%message ')+9:].decode('utf-8')
                         if(newMessage):
                             f = open('MOTD.txt', 'w')
                             f.write(newMessage)
