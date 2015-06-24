@@ -19,6 +19,7 @@ def print_checkin(participants):
                 pass
         if not participantsList:
             print "Checking in."
+            print (time.strftime("%H:%M:%S"))
             elem.SendMessage("#checkin")
             elem.SendMessage("I am a bot")
 
