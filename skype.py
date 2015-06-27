@@ -51,6 +51,7 @@ def queryStreamer(chat, streamer, streamerList, numLiveStreamers):
         pass
 
 def Commands(Message, Status):
+    global botOn
     if Status == "SENT" or Status == "RECEIVED":
         for chat in skypeClient.BookmarkedChats:
             if getIfValidGroup(members, chat._GetActiveMembers()):
@@ -58,56 +59,66 @@ def Commands(Message, Status):
                 messageUpper = Message.Body
                 print(messageUpper)
                 if Message.Chat == chat:
-                    if message == "%help":
-                        for message in getHelpMessages():
-                            chat.SendMessage(message)
-                    elif message == "%time":
-                        chat.SendMessage(" >> " + datetime.now().strftime("%Y-%m-%d %H:%M %Z"))
-                    elif message == "%live":
-                        getLive(chat)
-                    elif message.startswith("%8ball"):
-                        chat.SendMessage(" >> " + get8BallAnswer() + ".")
-                    elif message == "%streamers":
-                        chat.SendMessage(" >> " + ", ".join(sorted(streamerList.keys())))
-                    elif message.startswith("%addstreamer"):
-                        splitMessage = messageUpper.strip().split(" ")
-                        if (len(splitMessage) == 2):
-                            resp, message = addStreamer(splitMessage[1])
-                            if (resp):
-                                chat.SendMessage(" >> " + splitMessage[1] + " added to list.")
+                    if message == "%stopbot":
+                        botOn = False
+                        chat.SendMessage(" >> Goodbye. Zzz")
+                    elif message == "%startbot":
+                        botOn = True
+                        chat.SendMessage(" >> Hello World! I am back online!")
+
+                    elif botOn:
+                        if message == "%help":
+                            for message in getHelpMessages():
+                                chat.SendMessage(message)
+                        elif message == "%time":
+                            chat.SendMessage(" >> " + datetime.now().strftime("%Y-%m-%d %H:%M %Z"))
+                        elif message == "%live":
+                            getLive(chat)
+                        elif message.startswith("%8ball"):
+                            chat.SendMessage(" >> " + get8BallAnswer() + ".")
+                        elif message == "%streamers":
+                            chat.SendMessage(" >> " + ", ".join(sorted(streamerList.keys())))
+                        elif message == "#checkin" and Status != "SENT":
+                            chat.SendMessage(" >> Hello person/bot who checked in! I am DaskBot!")
+                        elif message.startswith("%addstreamer"):
+                            splitMessage = messageUpper.strip().split(" ")
+                            if (len(splitMessage) == 2):
+                                resp, message = addStreamer(splitMessage[1])
+                                if (resp):
+                                    chat.SendMessage(" >> " + splitMessage[1] + " added to list.")
+                                else:
+                                    chat.SendMessage(" >> " + message)
                             else:
-                                chat.SendMessage(" >> " + message)
-                        else:
-                            chat.SendMessage(" >> Invalid format.  %addstreamer [StreamerChannel]")
-                    elif message.startswith("%removestreamer"):
-                        splitMessage = message.strip().split(" ")
-                        if (len(splitMessage) == 2):
-                            resp = removeStreamer(splitMessage[1]);
-                            if resp:
-                                chat.SendMessage(" >> " + splitMessage[1] + " removed from the list.")
+                                chat.SendMessage(" >> Invalid format.  %addstreamer [StreamerChannel]")
+                        elif message.startswith("%removestreamer"):
+                            splitMessage = message.strip().split(" ")
+                            if (len(splitMessage) == 2):
+                                resp = removeStreamer(splitMessage[1]);
+                                if resp:
+                                    chat.SendMessage(" >> " + splitMessage[1] + " removed from the list.")
+                                else:
+                                    chat.SendMessage(" >> " + splitMessage[1] + " was not on the list.")
                             else:
-                                chat.SendMessage(" >> " + splitMessage[1] + " was not on the list.")
-                        else:
-                            chat.SendMessage(" >> Invalid format.  %removestreamer [StreamerChannel]")
-                    elif message == "%message":
-                        chat.SendMessage(" >> Today's message is: " + tryReading('MOTD.txt').read())
-                    elif message.startswith("%weather"):
-                        splitMessage = message.strip().split(" ")
-                        if (len(splitMessage) == 3):
-                            chat.SendMessage(getTemperature(splitMessage[1], splitMessage[2]))
-                        else:
-                            chat.SendMessage(" >> Invalid format.  %weather [City] [Country]")
-                    elif message.startswith("%message"):
-                        newMessage = messageUpper[messageUpper.find('%message ')+9:].decode('utf-8')
-                        if(newMessage):
-                            f = open('MOTD.txt', 'w')
-                            f.write(newMessage)
-                            chat.SendMessage(" >> Today's message is: " + newMessage)
-                    elif message.startswith("%csgo"):
-                        for i in range(4):
-                            chat.SendMessage("GOGOGOGOGOGGO")
-                    elif message.startswith("%"):
-                        chat.SendMessage(" >> Invalid command. Type in %help for assistance.")
+                                chat.SendMessage(" >> Invalid format.  %removestreamer [StreamerChannel]")
+                        elif message == "%message":
+                            chat.SendMessage(" >> Today's message is: " + tryReading('MOTD.txt').read())
+                        elif message.startswith("%weather"):
+                            splitMessage = message.strip().split(" ")
+                            if (len(splitMessage) == 3):
+                                chat.SendMessage(getTemperature(splitMessage[1], splitMessage[2]))
+                            else:
+                                chat.SendMessage(" >> Invalid format.  %weather [City] [Country]")
+                        elif message.startswith("%message"):
+                            newMessage = messageUpper[messageUpper.find('%message ')+9:].decode('utf-8')
+                            if(newMessage):
+                                f = open('MOTD.txt', 'w')
+                                f.write(newMessage)
+                                chat.SendMessage(" >> Today's message is: " + newMessage)
+                        elif message.startswith("%csgo"):
+                            for i in range(4):
+                                chat.SendMessage("GOGOGOGOGOGGO")
+                        elif message.startswith("%"):
+                            chat.SendMessage(" >> Invalid command. Type in %help for assistance.")
 
 class TaskThread(threading.Thread):
     """Thread that executes a task every N seconds"""
@@ -132,6 +143,8 @@ class TaskThread(threading.Thread):
 # Type in members of the groups you want to checkin with. 
 #Eg. members = ['John Doe'] will #checkin to all favourited groups who have John Doe
 members = []
+
+botOn = True
 
 # Create an instance of the Skype class.
 skypeClient = Skype4Py.Skype()

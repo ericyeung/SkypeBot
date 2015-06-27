@@ -5,7 +5,9 @@ help_messages = [" >> %time - Gets the current time(To be formatted)",
 " >> %addstreamer [streamer's channel] - Adds a streamer to the list of watched streamers.",
 " >> %removestreamer [streamer's channel] - Removes a streamer to the list of watched streamers.",
 " >> %message [optional message]- Shows/Modifies the message of the day.",
-" >> %weather [city] [country] - Gets the weather for a city in a country."
+" >> %weather [city] [country] - Gets the weather for a city in a country.",
+" >> %stopbot Turns off bot until %startbot is called again.",
+" >> %startbot - Turns the bot back on."
 ]
 
 def getHelpMessages():
