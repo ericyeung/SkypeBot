@@ -1,13 +1,7 @@
 import Skype4Py
 import threading
 import httplib2, json
-import time
-
-streamersList = ['LightBrite', 'iGumdrop', 'itsHafu', "nl_Kripp","reynad27","BehkuhTV","morberplz","LoLNatsumii"]
-streamerList = {}
-
-for streamer in streamersList:
-    streamerList[streamer] = 'https://api.twitch.tv/kraken/streams/' + streamer
+import os, time
 
 def print_checkin(participants):
     for elem in skypeClient.BookmarkedChats:  # Looks in bookmarked chats and returns True if chat is found.
@@ -19,34 +13,23 @@ def print_checkin(participants):
                 pass
         if not participantsList:
             print "Checking in."
-            print (time.strftime("%H:%M:%S"))
+            print (time.strftime("%H:%M:%S")) # timestamps for checkins
             elem.SendMessage("#checkin")
-            elem.SendMessage("I am a bot")
-
-            # Do not want more than one bot spamming streamers
-            """   
-            for streamer in streamerList:
-                h = httplib2.Http(".cache")
-                resp, content = h.request(streamerList[streamer], "GET")
-                contentObject = content.decode('utf-8')
-                data = json.loads(contentObject) 
-                if (data['stream']):
-                    print streamer + "'s stream is up!"
-                    elem.SendMessage(streamer + "'s stream is up! - http://www.twitch.tv/" + streamer)
-            """
+            elem.SendMessage("I am BiscuitsBot")
 
 from pyteaser import SummarizeUrl
-            
+
+
 def commands(Message, Status):
     if Status == 'SENT' or (Status == 'RECEIVED'):
         body = Message.Body
-        if Message.Body == "#test":
+        if body == "#beep":
             cmd_test(Message)
         
-        elif Message.Body == "#poll":
+        elif body == "#poll":
             cmd_poll(Message)
 
-        elif Message.Body == "#help":
+        elif body == "#help":
             cmd_help(Message)
         
         elif body.startswith("#tldr"):            
@@ -56,23 +39,49 @@ def commands(Message, Status):
             summaries = SummarizeUrl(url)  
             Message.Chat.SendMessage(summaries)
             
+        elif body.startswith("#stopbot"):
+            Message.Chat.SendMessage('Sleeping... for a while')
+            print "Script paused..."
+            #os._exit(0)
+            time.sleep(60.*1.) # 30 = 30 minutes, 60 = 1 hour, 120 = 2 hours, 180 = 3 hours, 240 = 4 hours, 300 = 5 hours, ... 
+            Message.Chat.SendMessage('BiscuitsBot is awake!')
+            print "Script resumed."
+
+        elif body.startswith("#killbot"):
+            Message.Chat.SendMessage('YOU KILLED KENNY')
+            os._exit(0)
+
+        elif body.startswith("#call"):
+            #GetCallWith()
+            Message.Chat.SendMessage('Sorry! This feature is not yet available. Please contact Ryan.')
+
+        elif body.startswith("#checkin") and Status == "RECEIVED":
+            Message.Chat.SendMessage('Hello human/machine, thanks for checking in!') 
+
+        elif body.startswith("#checkout"):
+            Message.Chat.SendMessage('Bye human!')
+
         else:
             pass
     else:
         pass
 
 def cmd_test(Message):
-    Message.Chat.SendMessage('Robot: Testing1')
-    time.sleep(1.)
-    Message.Chat.SendMessage('Robot: Testing2')
-    time.sleep(1.)
-    Message.Chat.SendMessage('Robot: Testing3')
-    time.sleep(1.)
+    Message.Chat.SendMessage('BiscuitsBot: Beep')
+    time.sleep(.5)
+    Message.Chat.SendMessage('BiscuitsBot: Boop')
+    time.sleep(.5)
+    Message.Chat.SendMessage('BiscuitsBot: Beep')
+    time.sleep(.5)
     print "Testing complete.\n"
 
 def cmd_help(Message):
-    Message.Chat.SendMessage('#test for beep boops')
-    Message.Chat.SendMessage('#poll for arena help')
+    Message.Chat.SendMessage('--> #beep for beep boops')
+    Message.Chat.SendMessage('--> #poll for arena help')
+    Message.Chat.SendMessage('--> #tldr for article summarys [do not use this yet]')
+    Message.Chat.SendMessage('--> #stopbot to put BiscuitsBot to sleep')
+    Message.Chat.SendMessage('--> #call for group calls [do not use this yet]')
+    Message.Chat.SendMessage('--> #killbot to murder BiscuitsBot')
 
 import random as rand
 arena_cards = ["first card","second card","third card"]
@@ -81,10 +90,10 @@ def getpollanswer():
     return arena_cards[rand.randint(0,2)]
 
 def cmd_poll(Message):
-    Message.Chat.SendMessage(getpollanswer() + ".")
-
-
+    Message.Chat.SendMessage("choose the" + getpollanswer())
 class TaskThread(threading.Thread):
+
+
     """Thread that executes a task every N seconds"""
     
     def __init__(self, task, args):
