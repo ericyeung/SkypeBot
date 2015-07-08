@@ -10,9 +10,8 @@ from help import getHelpMessages
 from files import tryReading
 
 def print_checkin(participants):
-    global botOn
     for chat in skypeClient.BookmarkedChats:  # Looks in bookmarked chats and returns a list of all bookmarked chats
-        if botOn and getIfValidGroup(participants, chat._GetActiveMembers()):
+        if botPower.get_power() and getIfValidGroup(participants, chat._GetActiveMembers()):
             print("Checking in.")
             chat.SendMessage(" >> Today's message is: " + tryReading('MOTD.txt').read())
             chat.SendMessage(getTemperature("Toronto","CA"))
@@ -52,7 +51,6 @@ def queryStreamer(chat, streamer, streamerList, numLiveStreamers):
         pass
 
 def Commands(Message, Status):
-    global botOn
     if Status == "SENT" or Status == "RECEIVED":
         for chat in skypeClient.BookmarkedChats:
             if getIfValidGroup(members, chat._GetActiveMembers()):
@@ -61,13 +59,13 @@ def Commands(Message, Status):
                 print(messageUpper)
                 if Message.Chat == chat:
                     if message == "%stopbot":
-                        botOn = False
+                        botPower.set_power(False)
                         chat.SendMessage(" >> Goodbye. Zzz")
                     elif message == "%startbot":
-                        botOn = True
+                        botPower.set_power(True)
                         chat.SendMessage(" >> Hello World! I am back online!")
 
-                    elif botOn:
+                    elif botPower.get_power():
                         if message == "%help":
                             for message in getHelpMessages():
                                 chat.SendMessage(message)
@@ -145,11 +143,21 @@ class TaskThread(threading.Thread):
             self.task(self.args)
             self._finished.wait(self._interval)
 
+class botPowerButton():
+    def __init__(self, power):
+        self.power = power
+
+    def set_power(self, power):
+        self.power = power
+
+    def get_power(self):
+        return self.power
+
 # Type in members of the groups you want to checkin with. 
 #Eg. members = ['John Doe'] will #checkin to all favourited groups who have John Doe
 members = []
 
-botOn = True
+botPower = botPowerButton(True)
 
 # Create an instance of the Skype class.
 skypeClient = Skype4Py.Skype()
