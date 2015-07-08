@@ -122,6 +122,14 @@ def Commands(Message, Status):
                                 chat.SendMessage("GOGOGOGOGOGGO")
                         elif message.startswith("%premade"):
                             chat.SendMessage(" >> Kaw Kaw KAW, calling all early birds")
+                        elif message.startswith("%wubwub"):
+                            for i in range(4):
+                                chat.SendMessage("WUBWUBWUBWUB")
+                        elif message.startswith("%kawkaw"):
+                            for i in range(4):
+                                chat.SendMessage("KAW AWH KAW AWH KAW AWH")
+                        elif message.startswith("%code"):
+                            chat.SendMessage(" >> It's time to CODE.")
                         elif message.startswith("%"):
                             chat.SendMessage(" >> Invalid command. Type in %help for assistance.")
 
