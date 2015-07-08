@@ -10,8 +10,9 @@ from help import getHelpMessages
 from files import tryReading
 
 def print_checkin(participants):
+    global botOn
     for chat in skypeClient.BookmarkedChats:  # Looks in bookmarked chats and returns a list of all bookmarked chats
-        if getIfValidGroup(participants, chat._GetActiveMembers()):
+        if botOn and getIfValidGroup(participants, chat._GetActiveMembers()):
             print("Checking in.")
             chat.SendMessage(" >> Today's message is: " + tryReading('MOTD.txt').read())
             chat.SendMessage(getTemperature("Toronto","CA"))
@@ -102,6 +103,8 @@ def Commands(Message, Status):
                                 chat.SendMessage(" >> Invalid format.  %removestreamer [StreamerChannel]")
                         elif message == "%message":
                             chat.SendMessage(" >> Today's message is: " + tryReading('MOTD.txt').read())
+                        elif messageUpper.startswith("%trigger"):
+                            chat.SendMessage(" >> [Trigger]" + messageUpper.replace("%trigger","",1))
                         elif message.startswith("%weather"):
                             splitMessage = message.strip().split(" ")
                             if (len(splitMessage) == 3):
