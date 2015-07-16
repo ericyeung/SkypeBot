@@ -40,14 +40,18 @@ def commands(Message, Status):
             url = splitMessage[1] 
             summaries = SummarizeUrl(url)  
             g = Goose()
-            article = g.extract(url)
+            #
+            if summaries:
+                for summary in summaries:
+                    Message.Chat.SendMessage(summary.encode("utf-8"))
+                    print summary.encode("utf-8")
+                article = g.extract(url)
+                print article.title # as a test
+                Message.Chat.SendMessage(">> The article title is" + " \""+ article.title + "\"")
+            else:
+                Message.Chat.SendMessage(">> The article is too powerful... Cannot summarize.")
 
-            for summary in summaries:
-                Message.Chat.SendMessage(summary.encode("utf-8"))
-                print summary.encode("utf-8")
-
-            print article.title # as a test
-            Message.Chat.SendMessage(">> The article title is" + " \""+ article.title + "\"")
+            
 
         elif body.startswith("#stopbot"):
             Message.Chat.SendMessage('>> Sleeping... for a while')
