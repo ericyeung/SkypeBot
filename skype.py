@@ -39,12 +39,12 @@ def commands(Message, Status):
             splitMessage = body.strip().split(" ") # splits the message into command and argument
             url = splitMessage[1] 
             summaries = SummarizeUrl(url)  
-            g = Goose()
-            #
+
             if summaries:
                 for summary in summaries:
                     Message.Chat.SendMessage(summary.encode("utf-8"))
                     print summary.encode("utf-8")
+                g = Goose()
                 article = g.extract(url)
                 print article.title # as a test
                 Message.Chat.SendMessage(">> The article title is" + " \""+ article.title + "\"")
@@ -139,3 +139,6 @@ skypeClient.OnMessageStatus = commands
 
 task =TaskThread(print_checkin, members)
 task.run()
+
+if __name__ == "__main__":
+    main()
