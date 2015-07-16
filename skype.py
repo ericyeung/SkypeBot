@@ -1,3 +1,4 @@
+# -*- coding: utf-8 -*-
 import Skype4Py
 import threading
 import httplib2, json
@@ -15,13 +16,14 @@ def print_checkin(participants):
             print "Checking in."
             print (time.strftime("%H:%M:%S")) # timestamps for checkins
             elem.SendMessage("#checkin")
-            elem.SendMessage("I am BiscuitsBot")
+            elem.SendMessage(">> I am BiscuitsBot")
 
 from pyteaser import SummarizeUrl
-
+from goose import Goose
 
 def commands(Message, Status):
     if Status == 'SENT' or (Status == 'RECEIVED'):
+        msg = Message.Body.lower()
         body = Message.Body
         if body == "#beep":
             cmd_test(Message)
@@ -33,22 +35,26 @@ def commands(Message, Status):
             cmd_help(Message)
         
         elif body.startswith("#tldr"):            
-            parts = body.split() #splits the message into command and arg
-            command = parts[0][1:]  # this is the #tldr part
-            url = commands[command](*parts[1:])  # applys the command with our argument (e.g. the article summarized)
+            Message.Chat.SendMessage(">> Summarizing your article...")
+            splitMessage = body.strip().split(" ") # splits the message into command and argument
+            url = splitMessage[1] 
             summaries = SummarizeUrl(url)  
+            g = Goose()
+            article = g.extract(url)
+            print article.title # as a test
             Message.Chat.SendMessage(summaries)
-            
+            Message.Chat.SendMessage(">> The article title is" + " \""+ article.title + "\"")
+
         elif body.startswith("#stopbot"):
-            Message.Chat.SendMessage('Sleeping... for a while')
+            Message.Chat.SendMessage('>> Sleeping... for a while')
             print "Script paused..."
-            #os._exit(0)
-            time.sleep(60.*1.) # 30 = 30 minutes, 60 = 1 hour, 120 = 2 hours, 180 = 3 hours, 240 = 4 hours, 300 = 5 hours, ... 
-            Message.Chat.SendMessage('BiscuitsBot is awake!')
+            #os._exit(0)t
+            time.sleep(60.*1.) # 30 = 30 minutes
+            Message.Chat.SendMessage('>> BiscuitsBot is awake!')
             print "Script resumed."
 
         elif body.startswith("#killbot"):
-            Message.Chat.SendMessage('YOU KILLED KENNY')
+            Message.Chat.SendMessage('>> YOU KILLED KENNY')
             os._exit(0)
 
         elif body.startswith("#call"):
@@ -56,10 +62,10 @@ def commands(Message, Status):
             Message.Chat.SendMessage('Sorry! This feature is not yet available. Please contact Ryan.')
 
         elif body.startswith("#checkin") and Status == "RECEIVED":
-            Message.Chat.SendMessage('Hello human/machine, thanks for checking in!') 
+            Message.Chat.SendMessage('>> Hello human/machine, thanks for checking in!') 
 
         elif body.startswith("#checkout"):
-            Message.Chat.SendMessage('Bye human!')
+            Message.Chat.SendMessage('>> Bye human!')
 
         else:
             pass
@@ -67,18 +73,18 @@ def commands(Message, Status):
         pass
 
 def cmd_test(Message):
-    Message.Chat.SendMessage('BiscuitsBot: Beep')
+    Message.Chat.SendMessage('>> Beep')
     time.sleep(.5)
-    Message.Chat.SendMessage('BiscuitsBot: Boop')
+    Message.Chat.SendMessage('>> Boop')
     time.sleep(.5)
-    Message.Chat.SendMessage('BiscuitsBot: Beep')
+    Message.Chat.SendMessage('>> Beep')
     time.sleep(.5)
     print "Testing complete.\n"
 
 def cmd_help(Message):
     Message.Chat.SendMessage('--> #beep for beep boops')
     Message.Chat.SendMessage('--> #poll for arena help')
-    Message.Chat.SendMessage('--> #tldr for article summarys [do not use this yet]')
+    Message.Chat.SendMessage('--> #tldr for article summarys [in progress]')
     Message.Chat.SendMessage('--> #stopbot to put BiscuitsBot to sleep')
     Message.Chat.SendMessage('--> #call for group calls [do not use this yet]')
     Message.Chat.SendMessage('--> #killbot to murder BiscuitsBot')
@@ -125,4 +131,3 @@ skypeClient.OnMessageStatus = commands
 
 task =TaskThread(print_checkin, members)
 task.run()
-    
