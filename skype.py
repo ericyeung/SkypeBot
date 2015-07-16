@@ -41,8 +41,12 @@ def commands(Message, Status):
             summaries = SummarizeUrl(url)  
             g = Goose()
             article = g.extract(url)
+
+            for summary in summaries:
+                Message.Chat.SendMessage(summary.encode("utf-8"))
+                print summary.encode("utf-8")
+
             print article.title # as a test
-            Message.Chat.SendMessage(summaries)
             Message.Chat.SendMessage(">> The article title is" + " \""+ article.title + "\"")
 
         elif body.startswith("#stopbot"):
