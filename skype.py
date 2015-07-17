@@ -20,7 +20,8 @@ def print_checkin(participants):
 
 from pyteaser import SummarizeUrl
 from goose import Goose
-
+sentences_per_summary = 3
+ 
 def commands(Message, Status):
     if Status == 'SENT' or (Status == 'RECEIVED'):
         msg = Message.Body.lower()
@@ -39,6 +40,7 @@ def commands(Message, Status):
             splitMessage = body.strip().split(" ") # splits the message into command and argument
             url = splitMessage[1] 
             summaries = SummarizeUrl(url)  
+            g = Goose()
 
             if summaries:
                 for summary in summaries:
@@ -46,17 +48,13 @@ def commands(Message, Status):
                     print summary.encode("utf-8")
                 g = Goose()
                 article = g.extract(url)
-                print article.title # as a test
                 Message.Chat.SendMessage(">> The article title is" + " \""+ article.title + "\"")
             else:
                 Message.Chat.SendMessage(">> The article is too powerful... Cannot summarize.")
 
-            
-
         elif body.startswith("#stopbot"):
             Message.Chat.SendMessage('>> Sleeping... for a while')
             print "Script paused..."
-            #os._exit(0)t
             time.sleep(60.*1.) # 30 = 30 minutes
             Message.Chat.SendMessage('>> BiscuitsBot is awake!')
             print "Script resumed."
@@ -67,7 +65,7 @@ def commands(Message, Status):
 
         elif body.startswith("#call"):
             #GetCallWith()
-            Message.Chat.SendMessage('Sorry! This feature is not yet available. Please contact Ryan.')
+            Message.Chat.SendMessage('>> Sorry! This feature is not yet available. Please contact Ryan.')
 
         elif body.startswith("#checkin") and Status == "RECEIVED":
             Message.Chat.SendMessage('>> Hello human/machine, thanks for checking in!') 
@@ -90,12 +88,12 @@ def cmd_test(Message):
     print "Testing complete.\n"
 
 def cmd_help(Message):
-    Message.Chat.SendMessage('--> #beep for beep boops')
-    Message.Chat.SendMessage('--> #poll for arena help')
-    Message.Chat.SendMessage('--> #tldr for article summarys [in progress]')
-    Message.Chat.SendMessage('--> #stopbot to put BiscuitsBot to sleep')
-    Message.Chat.SendMessage('--> #call for group calls [do not use this yet]')
-    Message.Chat.SendMessage('--> #killbot to murder BiscuitsBot')
+    Message.Chat.SendMessage('>> #beep for beep boops')
+    Message.Chat.SendMessage('>> #poll for arena help')
+    Message.Chat.SendMessage('>> #tldr for article summarys [in progress]')
+    Message.Chat.SendMessage('>> #stopbot to put BiscuitsBot to sleep')
+    Message.Chat.SendMessage('>> #call for group calls [do not use this yet]')
+    Message.Chat.SendMessage('>> #killbot to murder BiscuitsBot')
 
 import random as rand
 arena_cards = ["first card","second card","third card"]
@@ -104,7 +102,8 @@ def getpollanswer():
     return arena_cards[rand.randint(0,2)]
 
 def cmd_poll(Message):
-    Message.Chat.SendMessage("choose the" + getpollanswer())
+    Message.Chat.SendMessage(">> choose the" + getpollanswer())
+
 class TaskThread(threading.Thread):
 
 
@@ -139,6 +138,7 @@ skypeClient.OnMessageStatus = commands
 
 task =TaskThread(print_checkin, members)
 task.run()
-
+    
 if __name__ == "__main__":
     main()
+            
