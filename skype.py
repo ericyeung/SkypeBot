@@ -45,7 +45,6 @@ def commands(Message, Status):
             if summaries:
                 for summary in summaries:
                     Message.Chat.SendMessage(summary.encode("utf-8"))
-                    print summary.encode("utf-8")
                 g = Goose()
                 article = g.extract(url)
                 Message.Chat.SendMessage(">> The article title is" + " \""+ article.title + "\"")
