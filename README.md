@@ -6,6 +6,7 @@ Get 32-bit python and type ```pip install Skype4Py PyTeaser``` into your command
 Usage 
 ==============
 
+
 #tldr http://news.utoronto.ca/satoru-iwata-why-generation-mourning-loss-nintendos-ceo
 >> Summarizing your article...
 Many of their creations featured balloons floating away – a reference to one of the games Iwata helped create.
