@@ -7,7 +7,7 @@ Usage
 ==============
 
 
-#tldr http://news.utoronto.ca/satoru-iwata-why-generation-mourning-loss-nintendos-ceo
+/#tldr http://news.utoronto.ca/satoru-iwata-why-generation-mourning-loss-nintendos-ceo
 >> Summarizing your article...
 Many of their creations featured balloons floating away – a reference to one of the games Iwata helped create.
 Since becoming Nintendo's president, he's been the executive producer on countless Nintendo games from the GameCube era and onward.
