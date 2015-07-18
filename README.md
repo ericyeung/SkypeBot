@@ -1,10 +1,11 @@
 SkypeCheckin
 ==============
 
-1. Get 32-bit Python (Since Skype is a 32-bit application.) 
-2. pip install Skype4Py
-3. Run Skype
+1. Get 32-bit Python 
+2. :: 
+   pip install Skype4Py
+3. Open Skype
 4. Put the chat you want to "check in" to into your favourites list
-5. Put name(s) of the members of the group into the member list defined on line 37
-6. Run skype.py
-7. Have fun!
+5. ::
+   python skype.py into your commandline
+6. Have fun!
