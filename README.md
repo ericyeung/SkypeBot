@@ -6,6 +6,7 @@ Get 32-bit python and type ```pip install Skype4Py PyTeaser``` into your command
 Usage 
 ==============
 
+An example of the #tldr command: 
 ```
 #tldr http://news.utoronto.ca/satoru-iwata-why-generation-mourning-loss-nintendos-ceo
 >> Summarizing your article...
