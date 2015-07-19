@@ -1,0 +1,2 @@
+Skype4Py>=1.0
+Python-Goose>=1.0.25
