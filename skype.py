@@ -44,7 +44,7 @@ def commands(Message, Status):
 
         elif body.startswith("#killbot"):
             Message.Chat.SendMessage('>> YOU KILLED KENNY')
-            os._exit(0)
+            #os._exit(0)
 
         elif body.startswith("#call"):
             #GetCallWith()
