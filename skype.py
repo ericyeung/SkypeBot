@@ -44,7 +44,7 @@ def commands(Message, Status):
             print "Script resumed."
 
         elif body.startswith("#killbot"):
-            Message.Chat.SendMessage('>> YOU KILLED KENNY')
+            Message.Chat.SendMessage('>> TOXIC COMMAND, UNABLE TO TERMINATE')
             #os._exit(0)
 
         elif body.startswith("#call"):
