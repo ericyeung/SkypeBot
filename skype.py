@@ -33,7 +33,7 @@ def commands(Message, Status):
             cmd_help(Message)
         
         elif body.startswith("#tldr"):            
-        	cmd_tldr()
+        	cmd_tldr(Message)
 
         elif body.startswith("#stopbot"):
             Message.Chat.SendMessage('>> Sleeping... for a while')
