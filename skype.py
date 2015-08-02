@@ -52,7 +52,7 @@ def commands(Message, Status):
             Message.Chat.SendMessage('>> Sorry! This feature is not yet available. Please contact Ryan.')
 
         elif body.startswith("#checkin") and Status == "RECEIVED":
-            Message.Chat.SendMessage(">> Hello" + DisplayName ", thanks for checking in!") 
+            Message.Chat.SendMessage(">> Hello" + DisplayName + "\," + "thanks for checking in!") 
 
         elif body.startswith("#checkout"):
             Message.Chat.SendMessage('>> Bye human!')
