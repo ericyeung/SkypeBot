@@ -7,6 +7,7 @@ import os, time
 from tldr import cmd_tldr
 
 def print_checkin(participants):
+    global botstatus
     for elem in skypeClient.BookmarkedChats:  # Looks in bookmarked chats and returns True if chat is found.
         participantsList = list(participants)
         for member in elem._GetActiveMembers():
@@ -14,13 +15,14 @@ def print_checkin(participants):
                 participantsList.remove(member._GetFullName())
             except:
                 pass
-        if not participantsList:
+        if not participantsList and botstatus:
             print "Checking in."
             print (time.strftime("%H:%M:%S")) # timestamps for checkins
             elem.SendMessage("#checkin")
             elem.SendMessage(">> I am BiscuitsBot")
 
 def commands(Message, Status):
+    global botstatus
     if Status == 'SENT' or (Status == 'RECEIVED'):
         msg = Message.Body.lower()
         body = Message.Body
@@ -36,7 +38,7 @@ def commands(Message, Status):
         elif body.startswith("#tldr"):            
         	cmd_tldr(Message)
 
-        elif body.startswith("#stopbot"):
+        elif body.startswith("#sleep"):
             Message.Chat.SendMessage('>> Sleeping... for a while')
             print "Script paused..."
             time.sleep(60.*1.) # 30 = 30 minutes
@@ -56,6 +58,14 @@ def commands(Message, Status):
 
         elif body.startswith("#checkout"):
             Message.Chat.SendMessage('>> Bye human!')
+
+        elif message == "%stopbot":
+            botstatus = False
+            chat.SendMessage(" >> Goodbye. Zzz")
+        
+        elif message == "%startbot":
+            botstatus = True
+            chat.SendMessage(" >> Hello World! I am back online!")
 
         else:
             pass
@@ -86,7 +96,7 @@ def getpollanswer():
     return arena_cards[rand.randint(0,2)]
 
 def cmd_poll(Message):
-    Message.Chat.SendMessage(">> choose the" + getpollanswer())
+    Message.Chat.SendMessage(">> choose the " + getpollanswer())
 
 class TaskThread(threading.Thread):
 
@@ -121,6 +131,8 @@ skypeClient.OnMessageStatus = commands
 
 task =TaskThread(print_checkin, members)
 task.run()
+
+botstatus = True
     
 if __name__ == "__main__":
     main()
