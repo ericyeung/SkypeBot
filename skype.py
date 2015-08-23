@@ -144,7 +144,6 @@ skypeClient.OnMessageStatus = commands
 task =TaskThread(print_checkin, members)
 task.run()
 
-    
 if __name__ == "__main__":
     main()
             
