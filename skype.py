@@ -23,6 +23,7 @@ def print_checkin(participants):
 
 def commands(Message, Status):
     global botstatus
+
     if Status == 'SENT' or (Status == 'RECEIVED'):
         msg = Message.Body.lower()
         body = Message.Body
@@ -39,19 +40,26 @@ def commands(Message, Status):
         	cmd_tldr(Message)
 
         elif body.startswith("#sleep"):
-            Message.Chat.SendMessage('>> Sleeping... for a while')
+            splitMessage = body.strip().split(" ") # splits the message into command and argument
+            sleeptime = splitMessage[1]
+            sleepint = int(float(sleeptime))
+            Message.Chat.SendMessage('>> Sleeping... for' + sleepint + 'minutes')
+            time.sleep(60.*sleepint) # 30 = 30 minutes 
             print "Script paused..."
-            time.sleep(60.*1.) # 30 = 30 minutes
             Message.Chat.SendMessage('>> BiscuitsBot is awake!')
             print "Script resumed."
 
         elif body.startswith("#killbot"):
-            Message.Chat.SendMessage('>> TOXIC COMMAND, UNABLE TO TERMINATE')
-            #os._exit(0)
+            splitMessage = body.strip().split(" ") # splits the message into command and argument
+            secretpassword = splitMessage[1]
+            if secretpassword = ("kappa123"):
+                os._exit(0)
+            else: 
+                Message.Chat.SendMessage('>> WRONG PASSWORD, UNABLE TO TERMINATE')
 
         elif body.startswith("#call"):
             #GetCallWith()
-            Message.Chat.SendMessage('>> Sorry! This feature is not yet available. Please contact Ryan.')
+            Message.Chat.SendMessage('>> Sorry! This feature is not yet available.')
 
         elif body.startswith("#checkin") and Status == "RECEIVED":
             Message.Chat.SendMessage('>> Hello human/machine, thanks for checking in!') 
@@ -59,13 +67,13 @@ def commands(Message, Status):
         elif body.startswith("#checkout"):
             Message.Chat.SendMessage('>> Bye human!')
 
-        elif message == "%stopbot":
+        elif body.startswith("#test1"):
             botstatus = False
-            chat.SendMessage(" >> Goodbye. Zzz")
+            chat.SendMessage(" >> test1")
         
-        elif message == "%startbot":
+        elif body.startswith("#test2"):
             botstatus = True
-            chat.SendMessage(" >> Hello World! I am back online!")
+            chat.SendMessage(" >> test2")
 
         else:
             pass
