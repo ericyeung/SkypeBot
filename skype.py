@@ -8,6 +8,7 @@ from tldr import cmd_tldr
 
 def print_checkin(participants):
     global botstatus
+
     for elem in skypeClient.BookmarkedChats:  # Looks in bookmarked chats and returns True if chat is found.
         participantsList = list(participants)
         for member in elem._GetActiveMembers():
@@ -18,8 +19,10 @@ def print_checkin(participants):
         if not participantsList and botstatus:
             print "Checking in."
             print (time.strftime("%H:%M:%S")) # timestamps for checkins
-            elem.SendMessage("#checkin")
-            elem.SendMessage(">> I am BiscuitsBot")
+            #elem.SendMessage("#checkin")
+            #elem.SendMessage(">> I am BiscuitsBot")
+
+botstatus = True
 
 def commands(Message, Status):
     global botstatus
@@ -52,7 +55,8 @@ def commands(Message, Status):
         elif body.startswith("#killbot"):
             splitMessage = body.strip().split(" ") # splits the message into command and argument
             secretpassword = splitMessage[1]
-            if secretpassword = ("kappa123"):
+            if secretpassword == ("kappa123"):
+                Message.Chat.SendMessage('>> Correct password, goodbye!')
                 os._exit(0)
             else: 
                 Message.Chat.SendMessage('>> WRONG PASSWORD, UNABLE TO TERMINATE')
@@ -68,12 +72,12 @@ def commands(Message, Status):
             Message.Chat.SendMessage('>> Bye human!')
 
         elif body.startswith("#test1"):
-            botstatus = False
-            chat.SendMessage(" >> test1")
+            botstatus = False 
+            Message.Chat.SendMessage(" >> test1")
         
         elif body.startswith("#test2"):
             botstatus = True
-            chat.SendMessage(" >> test2")
+            Message.Chat.SendMessage(" >> test2")
 
         else:
             pass
@@ -140,7 +144,6 @@ skypeClient.OnMessageStatus = commands
 task =TaskThread(print_checkin, members)
 task.run()
 
-botstatus = True
     
 if __name__ == "__main__":
     main()
