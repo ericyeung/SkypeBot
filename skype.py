@@ -1,5 +1,4 @@
 #!/usr/bin/python
-# -*- coding: <encoding name> -*-
 import Skype4Py
 import threading
 import httplib2, json
