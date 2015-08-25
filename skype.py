@@ -3,6 +3,7 @@ import sys
 import Skype4Py
 import threading
 import httplib2, json
+import re
 
 from datetime import datetime
 from answer_ball import get8BallAnswer
@@ -10,6 +11,7 @@ from streamers_list import streamerList, addStreamer, removeStreamer
 from weather import getTemperature
 from help import getHelpMessages
 from files import tryReading
+from hearthstone import getCardDescription
 
 def print_checkin(participants):
     for chat in skypeClient.BookmarkedChats:  # Looks in bookmarked chats and returns a list of all bookmarked chats
@@ -77,7 +79,7 @@ def Commands(Message, Status):
                 elif message == "%streamers":
                     chat.SendMessage(" >> " + ", ".join(sorted(streamerList.keys())))
                 elif message == "#checkin" and Status != "SENT":
-                    chat.SendMessage(" >> Hello person/bot who checked in! I am DaskBot!")
+                    chat.SendMessage(" >> Hello " + Message.Sender.FullName + "!" + " I am DaskBot!")
                 elif message.startswith("%addstreamer"):
                     splitMessage = messageUpper.strip().split(" ")
                     if (len(splitMessage) == 2):
@@ -125,6 +127,14 @@ def Commands(Message, Status):
                 elif message.startswith("%kawkaw"):
                     for i in range(4):
                         chat.SendMessage("KAW AWH KAW AWH KAW AWH")
+                elif '[' in message and ']' in message and 'hscard' not in message: #Hearthstone card information
+                    results = re.findall(r'\[([^]]*)\]', message)
+                    for item in results:
+                        description = getCardDescription(item)
+                        if description:
+                            chat.SendMessage(" >> [HSCard] " + description)
+                        else:
+                            chat.SendMessage(" >> [HSCard] Cannot be found!  Please try again!")
                 elif message.startswith("%code"):
                     chat.SendMessage(" >> It's time to CODE.")
                 elif message.startswith("%"):
