@@ -102,8 +102,8 @@ def Commands(Message, Status):
                         chat.SendMessage(" >> Invalid format.  %removestreamer [StreamerChannel]")
                 elif message == "%message":
                     chat.SendMessage(" >> Today's message is: " + tryReading('MOTD.txt').read())
-                elif messageUpper.startswith("%trigger"):
-                    chat.SendMessage(" >> [Trigger]" + messageUpper.replace("%trigger","",1))
+                #elif messageUpper.startswith("%trigger"):
+                #    chat.SendMessage(" >> [Trigger]" + messageUpper.replace("%trigger","",1))
                 elif message.startswith("%weather"):
                     splitMessage = message.strip().split(" ")
                     if (len(splitMessage) == 3):
