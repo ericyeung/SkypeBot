@@ -1,13 +1,22 @@
 SkypeCheckin
 ==============
 
-1. Get 32-bit Python (Since Skype is a 32-bit application.) 
+Install guide:
+--------------
+
+1. Get 32-bit Python 2.X (Since Skype is a 32-bit application.) 
 2. Get pip and run `pip install -r "requirements.txt"`
 3. Run Skype
 4. Put the chat you want to "check in" to into your bookmarked list
 5. The members list in skype.py is a whitelist for the chats that contain members from the skype list you want to use the bot on.  For it to work, you must specify the full name as displayed on their Skype profile.  An empty list means the bot is enabled on all chats.
 6. Run `python skype.py`
 7. Have fun!
+
+Todo:
+------------
+- Get a dedicated key-store(Redis maybe?)
+- Hide my api keys(shhh)
+- Add stateful features (activity/game)
 
 Commands
 --------------
