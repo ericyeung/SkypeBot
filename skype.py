@@ -3,21 +3,21 @@
 
 import sys
 import Skype4Py
-import httplib2, json
+import httplib2
+import json
 import re
 import time
 import threading
 import argparse
-import signal
-
 from datetime import datetime
-from answer_ball import get8BallAnswer
-from streamers_list import streamerList, addStreamer, removeStreamer
-from weather import getTemperature
-from help import getHelpMessages
-from files import tryReading
-from hearthstone import getCardDescription
-from task_thread import TaskThread
+
+from modules.answer_ball import get8BallAnswer
+from modules.streamers_list import streamerList, addStreamer, removeStreamer
+from modules.weather import getTemperature
+from modules.help import getHelpMessages
+from modules.files import tryReading
+from modules.hearthstone import getCardDescription
+from modules.task_thread import TaskThread
 
 class SkypeBot():
     def __init__(self, members, periodic):
@@ -35,12 +35,11 @@ class SkypeBot():
             if self.power and self.getIfValidGroup(chat._GetActiveMembers()):
                 print("Checking in.")
                 chat.SendMessage(" >> Today's message is: " + tryReading('MOTD.txt').read())
-                chat.SendMessage(getTemperature("Toronto","CA"))
+                chat.SendMessage(getTemperature("Toronto","Canada"))
                 chat.SendMessage("#checkin")
                 self.getLive(chat)
     
     def getLive(self, chat):
-        numLiveStreamers = {'value': 0} # Act as a pointer when passed into function
         self.live = False
         threads = []
         for streamer in sorted(streamerList): # Create a new thread for each api call
@@ -63,10 +62,6 @@ class SkypeBot():
         except:
             pass
 
-    def start(self):
-        while True:
-            time.sleep(0.2)
-
     def getIfValidGroup(self, group_participants):
         participantsList = list(self.members)
         for member in group_participants:
@@ -75,7 +70,11 @@ class SkypeBot():
             except:
                 pass
         return not participantsList
-    
+        
+    def start(self):
+        while True:
+            time.sleep(0.2)
+
     def command_callback(self, Message, Status):
         if Status == "SENT" or Status == "RECEIVED":
             chat = Message.Chat
@@ -134,7 +133,7 @@ class SkypeBot():
                         else:
                             chat.SendMessage(" >> Invalid format.  %weather [City],[Country]")
                     elif message.startswith("%message"):
-                        newMessage = messageUpper[messageUpper.find('%message ')+9:].encode('utf-8')
+                        newMessage = messageUpper[9:].encode('utf-8')
                         if(newMessage):
                             f = open('MOTD.txt', 'w')
                             f.write(newMessage)
