@@ -1,4 +1,6 @@
 # python skype.py [-r] 
+# -*- coding: utf-8 -*-
+
 import sys
 import Skype4Py
 import httplib2, json
@@ -27,7 +29,7 @@ class SkypeBot():
         if periodic:
             task = TaskThread(self.print_checkin)
             task.run()
-
+    
     def print_checkin(self):
         for chat in self.skypeClient.BookmarkedChats:  # Looks in bookmarked chats and returns a list of all bookmarked chats
             if self.power and self.getIfValidGroup(chat._GetActiveMembers()):
@@ -125,13 +127,13 @@ class SkypeBot():
                     #elif messageUpper.startswith("%trigger"):
                     #    chat.SendMessage(" >> [Trigger]" + messageUpper.replace("%trigger","",1))
                     elif message.startswith("%weather"):
-                        splitMessage = message.strip().split(" ")
+                        splitMessage = message.strip().split(",")
                         if (len(splitMessage) == 3):
-                            chat.SendMessage(getTemperature(splitMessage[1], splitMessage[2]))
+                            chat.SendMessage(getTemperature(splitMessage[0].strip(), splitMessage[1].strip()))
                         else:
                             chat.SendMessage(" >> Invalid format.  %weather [City] [Country]")
                     elif message.startswith("%message"):
-                        newMessage = messageUpper[messageUpper.find('%message ')+9:].decode('utf-8')
+                        newMessage = messageUpper[messageUpper.find('%message ')+9:].encode('utf-8')
                         if(newMessage):
                             f = open('MOTD.txt', 'w')
                             f.write(newMessage)
