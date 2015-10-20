@@ -127,11 +127,14 @@ class SkypeBot():
                     #elif messageUpper.startswith("%trigger"):
                     #    chat.SendMessage(" >> [Trigger]" + messageUpper.replace("%trigger","",1))
                     elif message.startswith("%weather"):
-                        splitMessage = message.strip().split(",")
-                        if (len(splitMessage) == 3):
+                        weather_message = message[9:]
+                        print(weather_message)
+                        splitMessage = weather_message.strip().split(",")
+                        print(splitMessage)
+                        if (len(splitMessage) == 2):
                             chat.SendMessage(getTemperature(splitMessage[0].strip(), splitMessage[1].strip()))
                         else:
-                            chat.SendMessage(" >> Invalid format.  %weather [City] [Country]")
+                            chat.SendMessage(" >> Invalid format.  %weather [City],[Country]")
                     elif message.startswith("%message"):
                         newMessage = messageUpper[messageUpper.find('%message ')+9:].encode('utf-8')
                         if(newMessage):
