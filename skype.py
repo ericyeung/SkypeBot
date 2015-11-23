@@ -26,10 +26,26 @@ class SkypeBot():
         self.skypeClient.Attach()
         self.members = members
         self.power = True
+        self.streamer_state = {}
         if periodic:
-            task = TaskThread(self.print_checkin)
+            task = TaskThread(self.checkStreamers)
+            # Run every minute
+            task.setInterval(60)
             task.run()
     
+    def checkStreamers(self):
+        self.live = False
+        threads = []
+        for chat in self.skypeClient.BookmarkedChats:  # Looks in bookmarked chats and returns a list of all bookmarked chats
+            if self.power and self.getIfValidGroup(chat._GetActiveMembers()):
+                for streamer in sorted(streamerList): # Create a new thread for each api call
+                    thread = threading.Thread(target=self.queryStreamer, args=[chat, streamer, streamerList])
+                    thread.start()
+                    threads.append(thread)
+                for thread in threads:
+                    thread.join()
+        
+    """
     def print_checkin(self):
         for chat in self.skypeClient.BookmarkedChats:  # Looks in bookmarked chats and returns a list of all bookmarked chats
             if self.power and self.getIfValidGroup(chat._GetActiveMembers()):
@@ -50,6 +66,7 @@ class SkypeBot():
             thread.join()
         if not self.live:
             chat.SendMessage("No streamers are up! D:")
+    """
     
     def queryStreamer(self, chat, streamer, streamerList):
         try:
@@ -57,8 +74,13 @@ class SkypeBot():
             contentObject = content.decode('utf-8')
             data = json.loads(contentObject) 
             if (data['stream']):
-                chat.SendMessage(streamer + "'s stream is up! - http://www.twitch.tv/" + streamer)
+                if not self.streamer_state.get(streamer):
+                    chat.SendMessage(streamer + "'s stream is now online! - http://www.twitch.tv/" + streamer)
+                    self.streamer_state[streamer] = True
                 self.live = True
+            else:
+                if self.streamer_state.get(streamer):
+                    self.streamer_state[streamer] = False
         except:
             pass
 
