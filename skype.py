@@ -39,7 +39,7 @@ class SkypeBot():
         for chat in self.skypeClient.BookmarkedChats:  # Looks in bookmarked chats and returns a list of all bookmarked chats
             if self.power and self.getIfValidGroup(chat._GetActiveMembers()):
                 for streamer in sorted(streamerList): # Create a new thread for each api call
-                    thread = threading.Thread(target=self.queryStreamer, args=[chat, streamer, streamerList])
+                    thread = threading.Thread(target=self.queryStreamer, args=[chat, streamer, streamerList, False])
                     thread.start()
                     threads.append(thread)
                 for thread in threads:
@@ -54,27 +54,30 @@ class SkypeBot():
                 chat.SendMessage(getTemperature("Toronto","Canada"))
                 chat.SendMessage("#checkin")
                 self.getLive(chat)
-    
+    """
+
     def getLive(self, chat):
         self.live = False
         threads = []
         for streamer in sorted(streamerList): # Create a new thread for each api call
-            thread = threading.Thread(target=self.queryStreamer, args=[chat, streamer, streamerList])
+            thread = threading.Thread(target=self.queryStreamer, args=[chat, streamer, streamerList, True])
             thread.start()
             threads.append(thread)
         for thread in threads:
             thread.join()
         if not self.live:
             chat.SendMessage("No streamers are up! D:")
-    """
+
     
-    def queryStreamer(self, chat, streamer, streamerList):
+    def queryStreamer(self, chat, streamer, streamerList, allStreamers=True):
         try:
             resp, content = httplib2.Http().request(streamerList[streamer], "GET")
             contentObject = content.decode('utf-8')
             data = json.loads(contentObject) 
             if (data['stream']):
-                if not self.streamer_state.get(streamer):
+                if allStreamers:
+                    chat.SendMessage(streamer + "'s stream is up! - http://www.twitch.tv/" + streamer)
+                elif not self.streamer_state.get(streamer):
                     chat.SendMessage(streamer + "'s stream is now online! - http://www.twitch.tv/" + streamer)
                     self.streamer_state[streamer] = True
                 self.live = True
