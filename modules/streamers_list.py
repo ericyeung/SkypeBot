@@ -21,7 +21,7 @@ def addStreamer(streamer):
 			del data['logo']
 			data['stream'] = STREAM_ENDPOINT + data['name']
 			table.put_item(Item=data)
-			return True, "Success"
+			return True, "Success", data['display_name']
 		else:
 			return False, "Channel does not exist."
 	except:

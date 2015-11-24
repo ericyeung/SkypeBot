@@ -123,15 +123,17 @@ class SkypeBot():
                     elif message.startswith("%8ball"):
                         chat.SendMessage(" >> " + get8BallAnswer() + ".")
                     elif message == "%streamers":
-                        chat.SendMessage(" >> " + ", ".join(sorted(map(lambda x: x['display_name'], getStreamers()))))
+                        chat.SendMessage(" >> " + ", ".join(item['display_name'] 
+                                                            for item in sorted(getStreamers(),
+                                                                               key=lambda x: x['name'])))
                     elif message == "#checkin" and Status != "SENT":
                         chat.SendMessage(" >> Hello " + Message.Sender.FullName + "!" + " I am DaskBot!")
                     elif message.startswith("%addstreamer"):
                         splitMessage = messageUpper.strip().split(" ")
                         if (len(splitMessage) == 2):
-                            resp, message = addStreamer(splitMessage[1])
+                            resp, message, display_name = addStreamer(splitMessage[1])
                             if (resp):
-                                chat.SendMessage(" >> " + splitMessage[1] + " added to list.")
+                                chat.SendMessage(" >> " + display_name + " added to list.")
                             else:
                                 chat.SendMessage(" >> " + message)
                         else:
