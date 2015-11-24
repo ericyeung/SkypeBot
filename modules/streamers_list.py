@@ -1,5 +1,4 @@
 import httplib2, json
-from files import tryReading
 import boto3
 
 dynamodb = boto3.resource('dynamodb')

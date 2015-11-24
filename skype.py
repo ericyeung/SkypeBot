@@ -1,24 +1,24 @@
 # python skype.py [-r] 
 # -*- coding: utf-8 -*-
 
-import sys
-import Skype4Py
+import argparse
+import boto3
 import httplib2
 import json
 import re
-import time
+import Skype4Py
+import sys
 import threading
-import argparse
-import boto3
+import time
 from datetime import datetime
 
 from modules.answer_ball import get8BallAnswer
-from modules.streamers_list import getStreamers, addStreamer, removeStreamer
-from modules.weather import getTemperature
-from modules.help import getHelpMessages
-from modules.files import tryReading
 from modules.hearthstone import getCardDescription
+from modules.help import getHelpMessages
+from modules.motd import getMessage, updateMessage
+from modules.streamers_list import getStreamers, addStreamer, removeStreamer
 from modules.task_thread import TaskThread
+from modules.weather import getTemperature
 
 class SkypeBot():
     def __init__(self, members, periodic):
@@ -149,7 +149,7 @@ class SkypeBot():
                         else:
                             chat.SendMessage(" >> Invalid format.  %removestreamer [StreamerChannel]")
                     elif message == "%message":
-                        chat.SendMessage(" >> Today's message is: " + tryReading('MOTD.txt').read())
+                        chat.SendMessage(" >> Today's message is: " + getMessage())
                     elif messageUpper.startswith("%trigger"):
                         chat.SendMessage(" >> [Trigger]" + messageUpper.replace("%trigger","",1))
                     elif message.startswith("%weather"):
@@ -162,9 +162,7 @@ class SkypeBot():
                     elif message.startswith("%message"):
                         newMessage = messageUpper[9:].encode('utf-8')
                         if(newMessage):
-                            f = open('MOTD.txt', 'w')
-                            f.write(newMessage)
-                            chat.SendMessage(" >> Today's message is: " + newMessage)
+                            chat.SendMessage(" >> Today's message is: " + updateMessage(newMessage))
                     elif message.startswith("%csgo"):
                         for i in range(4):
                             chat.SendMessage("GOGOGOGOGOGGO")
