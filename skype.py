@@ -76,11 +76,9 @@ class SkypeBot():
             data = json.loads(contentObject)
             if (data['stream']):
                 if allStreamers:
-                    print(streamer['display_name'] + "'s stream is up! - http://www.twitch.tv/" + streamer['name'])
-                    #chat.SendMessage(streamer['display_name'] + "'s stream is up! - http://www.twitch.tv/" + streamer['name'])
+                    chat.SendMessage(streamer['display_name'] + "'s stream is up! - http://www.twitch.tv/" + streamer['name'])
                 elif not self.streamer_state.get(streamer['name']):
-                    print(streamer['display_name'] + "'s stream is now online! - http://www.twitch.tv/" + streamer['name'])
-                    #chat.SendMessage(streamer['display_name'] + "'s stream is now online! - http://www.twitch.tv/" + streamer['name'])
+                    chat.SendMessage(streamer['display_name'] + "'s stream is now online! - http://www.twitch.tv/" + streamer['name'])
                     self.streamer_state[streamer['name']] = True
                 self.live = True
             else:
