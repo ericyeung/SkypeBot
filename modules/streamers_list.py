@@ -1,43 +1,39 @@
 import httplib2, json
 from files import tryReading
+import boto3
 
-endpoint = 'https://api.twitch.tv/kraken/streams/'
+dynamodb = boto3.resource('dynamodb')
+table = dynamodb.Table('streamers')
+
+STREAM_ENDPOINT = 'https://api.twitch.tv/kraken/streams/'
+USERS_ENDPOINT = 'https://api.twitch.tv/kraken/users/'
 
 def addStreamer(streamer):
-	if streamer.lower() in streamerList:
-		return False, "Streamer is already on the list."
+	for item in table.scan()['Items']:
+		if item['name'] == streamer:
+			return False, "Channel already on list."
 	try:
-		resp, content = httplib2.Http().request(endpoint + streamer.lower(),  "GET")
+		resp, content = httplib2.Http().request(USERS_ENDPOINT + streamer.lower(), "GET")
 		contentObject = content.decode('utf-8')
-		data = json.loads(contentObject) 
-		if ("stream" in data):
-			streamerList[streamer.lower()] = 'https://api.twitch.tv/kraken/streams/' + streamer.lower()
-			saveList()
+		data = json.loads(contentObject)
+		if "error" not in data:
+			del data['bio']
+			del data['logo']
+			data['stream'] = STREAM_ENDPOINT + data['name']
+			table.put_item(Item=data)
 			return True, "Success"
 		else:
 			return False, "Channel does not exist."
 	except:
 		return False, "Internal error."
 
+
 def removeStreamer(streamer):
-	if streamer.lower() in streamerList:
-		del streamerList[streamer.lower()]
-		saveList()
+	for item in table.scan()['Items']:
+		if item['name'] == streamer:
+			table.delete_item(Key={'_id': item['_id']})
 		return True
 	return False
 
-
-def saveList():
-	f = open('streamers.txt', 'w')
-	for streamer in streamerList:
-		f.write(streamer + "\n")
-
-# List of streamers to subscribe to
-streamerList = {}
-
-
-
-for line in tryReading('streamers.txt'):
-	line = line.strip()
-	if line:
-		streamerList[line.lower()] = endpoint + line
+def getStreamers():
+	return table.scan()['Items']

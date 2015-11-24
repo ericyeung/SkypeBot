@@ -9,10 +9,11 @@ import re
 import time
 import threading
 import argparse
+import boto3
 from datetime import datetime
 
 from modules.answer_ball import get8BallAnswer
-from modules.streamers_list import streamerList, addStreamer, removeStreamer
+from modules.streamers_list import getStreamers, addStreamer, removeStreamer
 from modules.weather import getTemperature
 from modules.help import getHelpMessages
 from modules.files import tryReading
@@ -38,8 +39,8 @@ class SkypeBot():
         threads = []
         for chat in self.skypeClient.BookmarkedChats:  # Looks in bookmarked chats and returns a list of all bookmarked chats
             if self.power and self.getIfValidGroup(chat._GetActiveMembers()):
-                for streamer in sorted(streamerList): # Create a new thread for each api call
-                    thread = threading.Thread(target=self.queryStreamer, args=[chat, streamer, streamerList, False])
+                for streamer in sorted(getStreamers(), key=lambda x: x['name']): # Create a new thread for each api call
+                    thread = threading.Thread(target=self.queryStreamer, args=[chat, streamer, False])
                     thread.start()
                     threads.append(thread)
                 for thread in threads:
@@ -59,8 +60,8 @@ class SkypeBot():
     def getLive(self, chat):
         self.live = False
         threads = []
-        for streamer in sorted(streamerList): # Create a new thread for each api call
-            thread = threading.Thread(target=self.queryStreamer, args=[chat, streamer, streamerList, True])
+        for streamer in sorted(getStreamers(), key=lambda x: x['name']): # Create a new thread for each api call
+            thread = threading.Thread(target=self.queryStreamer, args=[chat, streamer, True])
             thread.start()
             threads.append(thread)
         for thread in threads:
@@ -68,22 +69,23 @@ class SkypeBot():
         if not self.live:
             chat.SendMessage("No streamers are up! D:")
 
-    
-    def queryStreamer(self, chat, streamer, streamerList, allStreamers=True):
+    def queryStreamer(self, chat, streamer, allStreamers=True):
         try:
-            resp, content = httplib2.Http().request(streamerList[streamer], "GET")
+            resp, content = httplib2.Http().request(streamer['stream'], "GET")
             contentObject = content.decode('utf-8')
-            data = json.loads(contentObject) 
+            data = json.loads(contentObject)
             if (data['stream']):
                 if allStreamers:
-                    chat.SendMessage(streamer + "'s stream is up! - http://www.twitch.tv/" + streamer)
-                elif not self.streamer_state.get(streamer):
-                    chat.SendMessage(streamer + "'s stream is now online! - http://www.twitch.tv/" + streamer)
-                    self.streamer_state[streamer] = True
+                    print(streamer['display_name'] + "'s stream is up! - http://www.twitch.tv/" + streamer['name'])
+                    #chat.SendMessage(streamer['display_name'] + "'s stream is up! - http://www.twitch.tv/" + streamer['name'])
+                elif not self.streamer_state.get(streamer['name']):
+                    print(streamer['display_name'] + "'s stream is now online! - http://www.twitch.tv/" + streamer['name'])
+                    #chat.SendMessage(streamer['display_name'] + "'s stream is now online! - http://www.twitch.tv/" + streamer['name'])
+                    self.streamer_state[streamer['name']] = True
                 self.live = True
             else:
-                if self.streamer_state.get(streamer):
-                    self.streamer_state[streamer] = False
+                if self.streamer_state.get(streamer['name']):
+                    self.streamer_state[streamer['name']] = False
         except:
             pass
 
@@ -123,7 +125,7 @@ class SkypeBot():
                     elif message.startswith("%8ball"):
                         chat.SendMessage(" >> " + get8BallAnswer() + ".")
                     elif message == "%streamers":
-                        chat.SendMessage(" >> " + ", ".join(sorted(streamerList.keys())))
+                        chat.SendMessage(" >> " + ", ".join(sorted(map(lambda x: x['display_name'], getStreamers()))))
                     elif message == "#checkin" and Status != "SENT":
                         chat.SendMessage(" >> Hello " + Message.Sender.FullName + "!" + " I am DaskBot!")
                     elif message.startswith("%addstreamer"):
@@ -148,8 +150,8 @@ class SkypeBot():
                             chat.SendMessage(" >> Invalid format.  %removestreamer [StreamerChannel]")
                     elif message == "%message":
                         chat.SendMessage(" >> Today's message is: " + tryReading('MOTD.txt').read())
-                    #elif messageUpper.startswith("%trigger"):
-                    #    chat.SendMessage(" >> [Trigger]" + messageUpper.replace("%trigger","",1))
+                    elif messageUpper.startswith("%trigger"):
+                        chat.SendMessage(" >> [Trigger]" + messageUpper.replace("%trigger","",1))
                     elif message.startswith("%weather"):
                         weather_message = message[9:]
                         splitMessage = weather_message.strip().split(",")
