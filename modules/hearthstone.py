@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 import httplib2, json
 
-def getCardDescription(name):
+def get_card_description(name):
 	name = name.replace(' ', '%20') # Replace raw spaces with encoded spaces
 	endpoint = "https://omgvamp-hearthstone-v1.p.mashape.com/cards/search/" + name
 	resp, content = httplib2.Http().request(endpoint, "GET", headers={"X-Mashape-Key": "nXfij7fxptmsh4p19dm15EMKKoQ3p1jXVZ4jsnkWWRD7nA6xWn"})

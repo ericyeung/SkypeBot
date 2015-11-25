@@ -4,13 +4,13 @@ from datetime import datetime
 dynamodb = boto3.resource('dynamodb')
 table = dynamodb.Table('skypecheckin')
 
-def getMessage():
-    return table.get_item(Key={'type':'message'})['Item']['value']
+def get_message():
+    return table.get_item(Key={'type':'message'})['Item']['value'].encode('utf-8')
 
-def updateMessage(message):
+def update_message(message):
     try:
         table.put_item(Item={'type':'message', 'value': message, 'date': datetime.now().strftime("%Y-%m-%d %H:%M %Z")})
-        return getMessage()
+        return get_message()
     except:
-        return False
+        return 'ERROR, UPDATE FAILED.'
     

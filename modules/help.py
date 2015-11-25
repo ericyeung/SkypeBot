@@ -1,5 +1,5 @@
 help_messages = [
-	" >> {hearthstonecardname} - Gets information about the Hearthstone Card. Eg. {fireball}."
+	" >> [brace]CardName[brace] - Gets information about the Hearthstone Card. Eg. [fireball]."
 	" >> %8ball [question] - Need an answer? Consult 8Ball.",
 	" >> %addstreamer [streamer's channel] - Adds a streamer to the list of watched streamers.",
 	" >> %live - Gets the livestreamers.",
@@ -9,9 +9,9 @@ help_messages = [
 	" >> %stopbot Turns off bot until %startbot is called again.",
 	" >> %streamers - Gives a list of streamers currently being polled.",
 	" >> %time - Gets the current time(To be formatted)",
-	" >> %trigger [message] - Outputs [Trigger] {message}."
+	" >> %trigger [message] - Outputs [Trigger] [message]."
 	" >> %weather [city],[country] - Gets the weather for a city in a country.",
 ]
 
-def getHelpMessages():
+def get_help_messages():
 	return help_messages;

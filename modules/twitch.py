@@ -1,5 +1,6 @@
 import httplib2, json
 import boto3
+import threading
 
 dynamodb = boto3.resource('dynamodb')
 table = dynamodb.Table('streamers')
@@ -7,7 +8,7 @@ table = dynamodb.Table('streamers')
 STREAM_ENDPOINT = 'https://api.twitch.tv/kraken/streams/'
 USERS_ENDPOINT = 'https://api.twitch.tv/kraken/users/'
 
-def addStreamer(streamer):
+def add_streamer(streamer):
 	for item in table.scan()['Items']:
 		if item['name'] == streamer:
 			return False, "Channel already on list."
@@ -27,12 +28,35 @@ def addStreamer(streamer):
 		return False, "Internal error."
 
 
-def removeStreamer(streamer):
+def remove_streamer(streamer):
 	for item in table.scan()['Items']:
 		if item['name'] == streamer:
 			table.delete_item(Key={'_id': item['_id']})
 			return True
 	return False
 
-def getStreamers():
+def get_streamers():
 	return table.scan()['Items']
+
+def get_all_live():
+	threads = []
+	results = []
+	for streamer in get_streamers(): # Create a new thread for each api call
+		thread = threading.Thread(target=query_streamer, args=[streamer, results])
+		thread.start()
+		threads.append(thread)
+	for thread in threads:
+		thread.join()
+	
+	return sorted(results, key=lambda x: x['name'])
+		
+def query_streamer(streamer, results):
+	try:
+		resp, content = httplib2.Http().request(streamer['stream'], "GET")
+		contentObject = content.decode('utf-8')
+		data = json.loads(contentObject)
+		if (data['stream']):
+			results.append(streamer)
+	except:
+		print('There was an error querying Twitch.tv for {} - {}'.format(streamer['display_name'], streamer['stream']))
+		pass
