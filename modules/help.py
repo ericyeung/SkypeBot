@@ -1,13 +1,16 @@
-help_messages = [" >> %time - Gets the current time(To be formatted)",
-" >> %live - Gets the livestreamers.",
-" >> %8ball [question] - Need an answer? Consult 8Ball.",
-" >> %streamers - Gives a list of streamers currently being polled.",
-" >> %addstreamer [streamer's channel] - Adds a streamer to the list of watched streamers.",
-" >> %removestreamer [streamer's channel] - Removes a streamer to the list of watched streamers.",
-" >> %message [optional message]- Shows/Modifies the message of the day.",
-" >> %weather [city] [country] - Gets the weather for a city in a country.",
-" >> %stopbot Turns off bot until %startbot is called again.",
-" >> %startbot - Turns the bot back on."
+help_messages = [
+	" >> {hearthstonecardname} - Gets information about the Hearthstone Card. Eg. {fireball}."
+	" >> %8ball [question] - Need an answer? Consult 8Ball.",
+	" >> %addstreamer [streamer's channel] - Adds a streamer to the list of watched streamers.",
+	" >> %live - Gets the livestreamers.",
+	" >> %message [optional message]- Shows/Modifies the message of the day.",
+	" >> %removestreamer [streamer's channel] - Removes a streamer to the list of watched streamers.",
+	" >> %startbot - Turns the bot back on if it was off."
+	" >> %stopbot Turns off bot until %startbot is called again.",
+	" >> %streamers - Gives a list of streamers currently being polled.",
+	" >> %time - Gets the current time(To be formatted)",
+	" >> %trigger [message] - Outputs [Trigger] {message}."
+	" >> %weather [city],[country] - Gets the weather for a city in a country.",
 ]
 
 def getHelpMessages():
