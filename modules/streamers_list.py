@@ -31,7 +31,7 @@ def removeStreamer(streamer):
 	for item in table.scan()['Items']:
 		if item['name'] == streamer:
 			table.delete_item(Key={'_id': item['_id']})
-		return True
+			return True
 	return False
 
 def getStreamers():
