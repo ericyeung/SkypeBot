@@ -37,13 +37,11 @@ class SkypeBot():
         threads = []
         if self.power:
             all_live = get_all_live()
-            print(all_live)
             new_streamers = [stream for stream in all_live if stream not in self.live_streamers]
-            print(new_streamers)
             for streamer in sorted(new_streamers, key=lambda x: x['name']):
                 for chat in self.skypeClient.BookmarkedChats:
-                    print("{}'s stream is now online! - http://www.twitch.tv/{}"
-                          .format(streamer['display_name'], streamer['name']))
+                    chat.SendMessage("{}'s stream is now online! - http://www.twitch.tv/{}"
+                                     .format(streamer['display_name'], streamer['name']))
             self.live_streamers = list(all_live)
 
     def get_live(self, chat):
