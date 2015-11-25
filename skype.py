@@ -18,7 +18,7 @@ from modules.help import get_help_messages
 from modules.motd import get_message, update_message
 from modules.twitch import get_streamers, add_streamer, remove_streamer, get_all_live
 from modules.task_thread import TaskThread
-from modules.weather import getTemperature
+from modules.weather import get_temperature
 
 class SkypeBot():
     def __init__(self, periodic):
@@ -60,8 +60,8 @@ class SkypeBot():
             time.sleep(0.2)
 
     def command_callback(self, Message, Status):
-        if Status == "SENT" or Status == "RECEIVED":
-            chat = Message.Chat
+        chat = Message.Chat
+        if chat in set(self.skypeClient.BookmarkedChats) and Status == "SENT" or Status == "RECEIVED":
             message = Message.Body
             message_raw = Message.Body.lower()
             if message_raw == "%stopbot":
@@ -118,7 +118,7 @@ class SkypeBot():
                     weather_message = message[9:]
                     splitMessage = weather_message.strip().split(",")
                     if (len(splitMessage) == 2):
-                        chat.SendMessage(getTemperature(splitMessage[0].strip(), splitMessage[1].strip()))
+                        chat.SendMessage(get_temperature(splitMessage[0].strip(), splitMessage[1].strip()))
                     else:
                         chat.SendMessage(" >> Invalid format.  %weather [City],[Country]")
                 elif message_raw.startswith("%csgo"):

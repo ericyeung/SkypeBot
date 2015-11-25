@@ -22,4 +22,4 @@ BALL_ANSWERS = ["It is certain",
 "Very doubtful"]
 
 def get_8_ball_answer():
-	return BALL_ANSWERS[random.randint(0,19)]
+	return BALL_ANSWERS[random.randint(0, len(BALL_ANSWERS)-1)]

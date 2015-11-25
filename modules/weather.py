@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 import httplib2, json
 
-def getTemperature(city, country):
+def get_temperature(city, country):
     try:
         url = 'http://api.openweathermap.org/data/2.5/weather?q='
         key = '0fae4818086cf9aaf84fd49efd93cb88' #Should hide this ; ]
