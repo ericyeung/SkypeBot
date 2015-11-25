@@ -35,27 +35,15 @@ class SkypeBot():
             task.run()
     
     def checkStreamers(self):
-        self.live = False
         threads = []
         for chat in self.skypeClient.BookmarkedChats:  # Looks in bookmarked chats and returns a list of all bookmarked chats
-            if self.power and self.getIfValidGroup(chat._GetActiveMembers()):
+            if self.power:
                 for streamer in sorted(getStreamers(), key=lambda x: x['name']): # Create a new thread for each api call
                     thread = threading.Thread(target=self.queryStreamer, args=[chat, streamer, False])
                     thread.start()
                     threads.append(thread)
                 for thread in threads:
                     thread.join()
-        
-    """
-    def print_checkin(self):
-        for chat in self.skypeClient.BookmarkedChats:  # Looks in bookmarked chats and returns a list of all bookmarked chats
-            if self.power and self.getIfValidGroup(chat._GetActiveMembers()):
-                print("Checking in.")
-                chat.SendMessage(" >> Today's message is: " + tryReading('MOTD.txt').read())
-                chat.SendMessage(getTemperature("Toronto","Canada"))
-                chat.SendMessage("#checkin")
-                self.getLive(chat)
-    """
 
     def getLive(self, chat):
         self.live = False
@@ -86,15 +74,6 @@ class SkypeBot():
                     self.streamer_state[streamer['name']] = False
         except:
             pass
-
-    def getIfValidGroup(self, group_participants):
-        participantsList = list(self.members)
-        for member in group_participants:
-            try:
-                participantsList.remove(member._GetFullName())
-            except:
-                pass
-        return not participantsList
         
     def start(self):
         while True:
@@ -103,89 +82,88 @@ class SkypeBot():
     def command_callback(self, Message, Status):
         if Status == "SENT" or Status == "RECEIVED":
             chat = Message.Chat
-            if self.getIfValidGroup(chat._GetActiveMembers()):
-                message = Message.Body.lower()
-                messageUpper = Message.Body
-                if message == "%stopbot":
-                    self.power = False
-                    chat.SendMessage(" >> Goodbye. Zzz")
-                elif message == "%startbot":
-                    self.power = True
-                    chat.SendMessage(" >> Hello World! I am back online!")
-                elif self.power:
-                    if message == "%help":
-                        for message in getHelpMessages():
-                            chat.SendMessage(message)
-                    elif message == "%time":
-                        chat.SendMessage(" >> " + datetime.now().strftime("%Y-%m-%d %H:%M %Z"))
-                    elif message == "%live":
-                        self.getLive(chat)
-                    elif message.startswith("%8ball"):
-                        chat.SendMessage(" >> " + get8BallAnswer() + ".")
-                    elif message == "%streamers":
-                        chat.SendMessage(" >> " + ", ".join(item['display_name'] 
-                                                            for item in sorted(getStreamers(),
-                                                                               key=lambda x: x['name'])))
-                    elif message == "#checkin" and Status != "SENT":
-                        chat.SendMessage(" >> Hello " + Message.Sender.FullName + "!" + " I am DaskBot!")
-                    elif message.startswith("%addstreamer"):
-                        splitMessage = messageUpper.strip().split(" ")
-                        if (len(splitMessage) == 2):
-                            resp, message, display_name = addStreamer(splitMessage[1])
-                            if (resp):
-                                chat.SendMessage(" >> " + display_name + " added to list.")
-                            else:
-                                chat.SendMessage(" >> " + message)
+            message = Message.Body.lower()
+            messageUpper = Message.Body
+            if message == "%stopbot":
+                self.power = False
+                chat.SendMessage(" >> Goodbye. Zzz")
+            elif message == "%startbot":
+                self.power = True
+                chat.SendMessage(" >> Hello World! I am back online!")
+            elif self.power:
+                if message == "%help":
+                    for message in getHelpMessages():
+                        chat.SendMessage(message)
+                elif message == "%time":
+                    chat.SendMessage(" >> " + datetime.now().strftime("%Y-%m-%d %H:%M %Z"))
+                elif message == "%live":
+                    self.getLive(chat)
+                elif message.startswith("%8ball"):
+                    chat.SendMessage(" >> " + get8BallAnswer() + ".")
+                elif message == "%streamers":
+                    chat.SendMessage(" >> " + ", ".join(item['display_name'] 
+                                                        for item in sorted(getStreamers(),
+                                                                           key=lambda x: x['name'])))
+                elif message == "#checkin" and Status != "SENT":
+                    chat.SendMessage(" >> Hello " + Message.Sender.FullName + "!" + " I am DaskBot!")
+                elif message.startswith("%addstreamer"):
+                    splitMessage = messageUpper.strip().split(" ")
+                    if (len(splitMessage) == 2):
+                        resp, message, display_name = addStreamer(splitMessage[1])
+                        if (resp):
+                            chat.SendMessage(" >> " + display_name + " added to list.")
                         else:
-                            chat.SendMessage(" >> Invalid format.  %addstreamer [StreamerChannel]")
-                    elif message.startswith("%removestreamer"):
-                        splitMessage = message.strip().split(" ")
-                        if (len(splitMessage) == 2):
-                            resp = removeStreamer(splitMessage[1]);
-                            if resp:
-                                chat.SendMessage(" >> " + splitMessage[1] + " removed from the list.")
-                            else:
-                                chat.SendMessage(" >> " + splitMessage[1] + " was not on the list.")
+                            chat.SendMessage(" >> " + message)
+                    else:
+                        chat.SendMessage(" >> Invalid format.  %addstreamer [StreamerChannel]")
+                elif message.startswith("%removestreamer"):
+                    splitMessage = message.strip().split(" ")
+                    if (len(splitMessage) == 2):
+                        resp = removeStreamer(splitMessage[1]);
+                        if resp:
+                            chat.SendMessage(" >> " + splitMessage[1] + " removed from the list.")
                         else:
-                            chat.SendMessage(" >> Invalid format.  %removestreamer [StreamerChannel]")
-                    elif message == "%message":
-                        chat.SendMessage(" >> Today's message is: " + getMessage())
-                    elif messageUpper.startswith("%trigger"):
-                        chat.SendMessage(" >> [Trigger]" + messageUpper.replace("%trigger","",1))
-                    elif message.startswith("%weather"):
-                        weather_message = message[9:]
-                        splitMessage = weather_message.strip().split(",")
-                        if (len(splitMessage) == 2):
-                            chat.SendMessage(getTemperature(splitMessage[0].strip(), splitMessage[1].strip()))
+                            chat.SendMessage(" >> " + splitMessage[1] + " was not on the list.")
+                    else:
+                        chat.SendMessage(" >> Invalid format.  %removestreamer [StreamerChannel]")
+                elif message == "%message":
+                    chat.SendMessage(" >> Today's message is: " + getMessage())
+                elif messageUpper.startswith("%trigger"):
+                    chat.SendMessage(" >> [Trigger]" + messageUpper.replace("%trigger","",1))
+                elif message.startswith("%weather"):
+                    weather_message = message[9:]
+                    splitMessage = weather_message.strip().split(",")
+                    if (len(splitMessage) == 2):
+                        chat.SendMessage(getTemperature(splitMessage[0].strip(), splitMessage[1].strip()))
+                    else:
+                        chat.SendMessage(" >> Invalid format.  %weather [City],[Country]")
+                elif message.startswith("%message"):
+                    newMessage = messageUpper[9:].encode('utf-8')
+                    if(newMessage):
+                        chat.SendMessage(" >> Today's message is: " + updateMessage(newMessage))
+                elif message.startswith("%csgo"):
+                    for i in range(4):
+                        chat.SendMessage("GOGOGOGOGOGGO")
+                elif message.startswith("%premade"):
+                    chat.SendMessage(" >> Kaw Kaw KAW, calling all early birds")
+                elif message.startswith("%wubwub"):
+                    for i in range(4):
+                        chat.SendMessage("WUBWUBWUBWUB")
+                elif message.startswith("%kawkaw"):
+                    for i in range(4):
+                        chat.SendMessage("KAW AWH KAW AWH KAW AWH")
+                elif '{' in message and '}' in message and 'hscard' not in message: #Hearthstone card information
+                    results = re.findall(r'\{([^}]*)\}', message)
+                    for item in results:
+                        description = getCardDescription(item)
+                        if description:
+                            chat.SendMessage(" >> [HSCard] " + description)
                         else:
-                            chat.SendMessage(" >> Invalid format.  %weather [City],[Country]")
-                    elif message.startswith("%message"):
-                        newMessage = messageUpper[9:].encode('utf-8')
-                        if(newMessage):
-                            chat.SendMessage(" >> Today's message is: " + updateMessage(newMessage))
-                    elif message.startswith("%csgo"):
-                        for i in range(4):
-                            chat.SendMessage("GOGOGOGOGOGGO")
-                    elif message.startswith("%premade"):
-                        chat.SendMessage(" >> Kaw Kaw KAW, calling all early birds")
-                    elif message.startswith("%wubwub"):
-                        for i in range(4):
-                            chat.SendMessage("WUBWUBWUBWUB")
-                    elif message.startswith("%kawkaw"):
-                        for i in range(4):
-                            chat.SendMessage("KAW AWH KAW AWH KAW AWH")
-                    elif '{' in message and '}' in message and 'hscard' not in message: #Hearthstone card information
-                        results = re.findall(r'\{([^}]*)\}', message)
-                        for item in results:
-                            description = getCardDescription(item)
-                            if description:
-                                chat.SendMessage(" >> [HSCard] " + description)
-                            else:
-                                chat.SendMessage(" >> [HSCard] Cannot be found!  Please try again!")
-                    elif message.startswith("%code"):
-                        chat.SendMessage(" >> It's time to CODE.")
-                    elif message.startswith("%"):
-                        chat.SendMessage(" >> Invalid command. Type in %help for assistance.")
+                            chat.SendMessage(" >> [HSCard] Cannot be found!  Please try again!")
+                elif message.startswith("%code"):
+                    chat.SendMessage(" >> It's time to CODE.")
+                elif message.startswith("%"):
+                    chat.SendMessage(" >> Invalid command. Type in %help for assistance.")
 
 # Type in members of the groups you want to checkin with. 
 #Eg. members = ['John Doe'] will #checkin to all favourited groups who have John Doe
