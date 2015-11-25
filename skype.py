@@ -59,7 +59,7 @@ class SkypeBot():
 
     def command_callback(self, Message, Status):
         chat = Message.Chat
-        if chat in set(self.skypeClient.BookmarkedChats) and Status == "SENT" or Status == "RECEIVED":
+        if chat in set(self.skypeClient.BookmarkedChats) and (Status == "SENT" or Status == "RECEIVED"):
             message = Message.Body
             message_raw = Message.Body.lower()
             if message_raw == "%stopbot":
