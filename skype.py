@@ -165,7 +165,7 @@ class SkypeBot():
             new_streamers = [stream for stream in all_live if stream not in self.live_streamers]
             for streamer in sorted(new_streamers, key=lambda x: x['name']):
                 for chat in self.skypeClient.BookmarkedChats:
-                    self.sendMessage(chat, "{}'s stream is now online! - http://www.twitch.tv/{}"
+                    self.send_message(chat, "{}'s stream is now online! - http://www.twitch.tv/{}"
                                             .format(streamer['display_name'], streamer['name']))
             self.live_streamers = list(all_live)
 
