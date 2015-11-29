@@ -1,16 +1,9 @@
-# python skype.py [-r] 
+# python skype.py [-r]
 # -*- coding: utf-8 -*-
 
 import argparse
-import boto3
-import httplib2
-import json
-import re
 import Skype4Py
-import sys
-import threading
 import time
-import subprocess
 
 from datetime import datetime
 
@@ -29,11 +22,11 @@ class SkypeBot():
         self.skypeClient.Attach()
         self.power = True
         self.live_streamers = []
-        
+
         self.commands = {
             '8ball': self.handle_8_ball,
             'addstreamer': self.handle_add_streamer,
-            'code': self.handle_code,         
+            'code': self.handle_code,
             'csgo': self.handle_csgo,
             'help': self.handle_help,
             'hscard': self.handle_hscard,
@@ -49,40 +42,38 @@ class SkypeBot():
             'weather': self.handle_weather,
             'wubwub': self.handle_wubwub
         }
-        
+
         if periodic:
             task = TaskThread(self.check_streamers_continuously)
             # Run every minute
-            task.setInterval(60)
+            task.set_interval(60)
             task.run()
 
-        
-        
     def handle_8_ball(self, chat, content):
         self.send_message(chat, " >> " + get_8_ball_answer() + ".")
-        
+
     def handle_add_streamer(self, chat, content):
         tokenized = content.split()
         if tokenized:
             resp, resp_message, display_name = add_streamer(tokenized[0])
-            if (resp):
+            if resp:
                 self.send_message(chat, " >> " + display_name + " added to list.")
             else:
                 self.send_message(chat, " >> " + resp_message)
         else:
             self.send_message(chat, " >> Invalid format.  %addstreamer [streamer_channel]")
-        
+
     def handle_code(self, chat, content):
         self.send_message(chat, " >> It's time to CODE.")
-        
+
     def handle_csgo(self, chat, content):
         for i in range(4):
             self.send_message(chat, "GOGOGOGOGOGGO")
-    
+
     def handle_help(self, chat, content):
         for help_message in get_help_messages():
             self.send_message(chat, help_message)
-    
+
     def handle_hscard(self, chat, content):
         description = get_card_description(content)
         if description:
@@ -93,7 +84,7 @@ class SkypeBot():
     def handle_kawkaw(self, chat, content):
         for i in range(4):
             self.send_message(chat, "KAW AWH KAW AWH KAW AWH")
-    
+
     def handle_live(self, chat, content):
         all_live = get_all_live()
         if not all_live:
@@ -102,15 +93,15 @@ class SkypeBot():
             for streamer in all_live:
                 self.send_message(chat, "{}'s stream is up!  http://www.twitch.tv/{}"
                                         .format(streamer['display_name'], streamer['name']))
-    
+
     def handle_message(self, chat, content):
         if content:
             new_message = content.encode('utf_8')
-            if(new_message):
+            if new_message:
                 self.send_message(chat, " >> Today's message is: {}".format(update_message(new_message)))
         else:
             self.send_message(chat, " >> Today's message is: " + get_message())
-    
+
     def handle_power(self, chat, content):
         if content.lower() == 'start':
             self.power = True
@@ -118,14 +109,14 @@ class SkypeBot():
         elif content.lower() == 'stop':
             self.power = False
             self.send_message(chat, " >> Goodbye. Zzz")
-    
+
     def handle_premade(self, chat, content):
         self.send_message(chat, " >> Kaw Kaw KAW, calling all early birds")
 
     def handle_remove_streamer(self, chat, content):
         tokenized = content.split()
         if tokenized:
-            resp = remove_streamer(tokenized[0]);
+            resp = remove_streamer(tokenized[0])
             if resp:
                 self.send_message(chat, " >> " + tokenized[0] + " removed from the list.")
             else:
@@ -135,23 +126,24 @@ class SkypeBot():
 
     def handle_streamers(self, chat, content):
         if not content:
-            self.send_message(chat, " >> " + ", ".join(item['display_name'] 
-                                                for item in sorted(get_streamers(),
-                                                                   key=lambda x: x['name'])))
-    def handle_time(self, chat, args):
+            self.send_message(chat, " >> " + ", ".join(item['display_name']
+                                                       for item in sorted(get_streamers(),
+                                                                          key=lambda x: x['name'])))
+
+    def handle_time(self, chat, content):
         self.send_message(chat, " >> " + datetime.now().strftime("%Y-%m-%d %H:%M %Z"))
-    
-    def handle_trigger(self, chat, args):
-        self.send_message(chat, " >> [Trigger] " + args)
-    
-    def handle_weather(self, chat, args):
-        location = args.split(",")
-        if (len(location) == 2):
+
+    def handle_trigger(self, chat, content):
+        self.send_message(chat, " >> [Trigger] " + content)
+
+    def handle_weather(self, chat, content):
+        location = content.split(",")
+        if len(location) == 2:
             self.send_message(chat, get_temperature(location[0].strip(), location[1].strip()))
         else:
             self.send_message(chat, " >> Invalid format.  %weather [city],[country]")
-    
-    def handle_wubwub(self, chat, args):
+
+    def handle_wubwub(self, chat, content):
         for i in range(4):
             self.send_message(chat, "WUBWUBWUBWUB")
 
@@ -160,9 +152,8 @@ class SkypeBot():
             chat.SendMessage(msg)
         else:
             print(msg)
-    
+
     def check_streamers_continuously(self):
-        threads = []
         if self.power:
             all_live = get_all_live()
             new_streamers = [stream for stream in all_live if stream not in self.live_streamers]
