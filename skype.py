@@ -29,12 +29,7 @@ class SkypeBot():
         self.skypeClient.Attach()
         self.power = True
         self.live_streamers = []
-        if periodic:
-            task = TaskThread(self.check_streamers_continuously)
-            # Run every minute
-            task.setInterval(60)
-            task.run()
-
+        
         self.commands = {
             '8ball': self.handle_8_ball,
             'addstreamer': self.handle_add_streamer,
@@ -54,6 +49,14 @@ class SkypeBot():
             'weather': self.handle_weather,
             'wubwub': self.handle_wubwub
         }
+        
+        if periodic:
+            task = TaskThread(self.check_streamers_continuously)
+            # Run every minute
+            task.setInterval(60)
+            task.run()
+
+        
         
     def handle_8_ball(self, chat, content):
         self.send_message(chat, " >> " + get_8_ball_answer() + ".")
