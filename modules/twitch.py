@@ -11,7 +11,7 @@ USERS_ENDPOINT = 'https://api.twitch.tv/kraken/users/'
 def add_streamer(streamer):
 	for item in table.scan()['Items']:
 		if item['name'] == streamer.lower():
-			return False, "Channel already on list."
+			return False, "Channel already on list.", ""
 	try:
 		resp, content = httplib2.Http().request(USERS_ENDPOINT + streamer.lower(), "GET")
 		contentObject = content.decode('utf-8')
@@ -23,9 +23,9 @@ def add_streamer(streamer):
 			table.put_item(Item=data)
 			return True, "Success", data['display_name']
 		else:
-			return False, "Channel does not exist."
+			return False, "Channel does not exist.", ""
 	except:
-		return False, "Internal error."
+		return False, "Internal error.", ""
 
 
 def remove_streamer(streamer):
