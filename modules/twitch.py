@@ -10,7 +10,7 @@ USERS_ENDPOINT = 'https://api.twitch.tv/kraken/users/'
 
 def add_streamer(streamer):
 	for item in table.scan()['Items']:
-		if item['name'] == streamer:
+		if item['name'] == streamer.lower():
 			return False, "Channel already on list."
 	try:
 		resp, content = httplib2.Http().request(USERS_ENDPOINT + streamer.lower(), "GET")
@@ -30,7 +30,7 @@ def add_streamer(streamer):
 
 def remove_streamer(streamer):
 	for item in table.scan()['Items']:
-		if item['name'] == streamer:
+		if item['name'] == streamer.lower():
 			table.delete_item(Key={'_id': item['_id']})
 			return True
 	return False
