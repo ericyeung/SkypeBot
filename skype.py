@@ -158,7 +158,7 @@ class SkypeBot():
             all_live = get_all_live()
             new_streamers = [stream for stream in all_live if stream not in self.live_streamers]
             for streamer in sorted(new_streamers, key=lambda x: x['name']):
-                for chat in self.skypeClient.BookmarkedChats:
+                for chat in set(self.skypeClient.BookmarkedChats):
                     self.send_message(chat, "{}'s stream is now online! - http://www.twitch.tv/{}"
                                             .format(streamer['display_name'], streamer['name']))
             self.live_streamers = list(all_live)
@@ -176,7 +176,7 @@ class SkypeBot():
 
     def command_callback(self, Message, Status):
         chat = Message.Chat
-        if chat in set(self.skypeClient.BookmarkedChats) and (Status == "SENT" or Status == "RECEIVED"):
+        if (chat in set(self.skypeClient.BookmarkedChats)) and (Status == "SENT" or Status == "RECEIVED"):
             message = Message.Body
             tokenized = message.split()
             if tokenized[0].startswith("%"):
