@@ -90,7 +90,7 @@ def commands(Message, Status):
             tempz = rand.randrange(10, 21)
             Message.Chat.SendMessage("You rolled a " + str(tempz) + " .")
  
-            if tempz <= 16:
+            if tempz <= 15:
                 health[Message.Sender.Handle] = health[Message.Sender.Handle] - 20
                 Message.Chat.SendMessage("You got injured! Lost 20 health.")
            
@@ -153,12 +153,17 @@ def cmd_test(Message):
     print "Testing complete.\n"
  
 def cmd_help(Message):
-    Message.Chat.SendMessage('>> #beep for beep boops')
-    Message.Chat.SendMessage('>> #poll for arena help')
-    Message.Chat.SendMessage('>> #tldr for article summarys [in progress]')
+    Message.Chat.SendMessage('>> #tldr for article summarys')
     Message.Chat.SendMessage('>> #stopbot to put BiscuitsBot to sleep')
-    Message.Chat.SendMessage('>> #call for group calls [do not use this yet]')
     Message.Chat.SendMessage('>> #killbot to murder BiscuitsBot')
+    Message.Chat.SendMessage('>> RPG COMMANDS BELOW')
+    Message.Chat.SendMessage('>> #bottlecap to check your bottlecap balance. (You get 10 per message)')
+    Message.Chat.SendMessage('>> #explore to get potential bottlecaps (40% chance for success)')
+    Message.Chat.SendMessage('>> #heal to use a stimpack and regain 50 health')
+    Message.Chat.SendMessage('>> #health to check your health')
+    Message.Chat.SendMessage('>> #shop to go shopping')
+    Message.Chat.SendMessage('>> #buy to buy stuff')
+    Message.Chat.SendMessage('>> #leaderboard to check the bottlecap rankings')
  
 import random as rand
 arena_cards = ["first card","second card","third card"]
