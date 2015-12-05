@@ -1,12 +1,13 @@
 #!/usr/bin/python
-# -*- coding: <encoding name> -*-
 import Skype4Py
 import threading
 import httplib2, json
 import os, time
+import random as rand
 from tldr import cmd_tldr
 
 def print_checkin(participants):
+
     for elem in skypeClient.BookmarkedChats:  # Looks in bookmarked chats and returns True if chat is found.
         participantsList = list(participants)
         for member in elem._GetActiveMembers():
@@ -17,13 +18,30 @@ def print_checkin(participants):
         if not participantsList:
             print "Checking in."
             print (time.strftime("%H:%M:%S")) # timestamps for checkins
-            elem.SendMessage("#checkin")
-            elem.SendMessage(">> I am BiscuitsBot")
+            #elem.SendMessage("#checkin")
+            #elem.SendMessage(">> I am BiscuitsBot")
+
+# Initial currency (should have a file to r/w)
+bottlecaps = {'dragonslayer965': 500, 'irlightbrite': 500, 'akumaluffy':500, 'windaskk':500, 'elesevd':500, 'ericirq.yeung':500, 'live:biscuitsbot': 100}
+
+health = {'dragonslayer965': 100, 'irlightbrite': 100, 'akumaluffy':100, 'windaskk':100, 'elesevd':100, 'ericirq.yeung':100, 'live:biscuitsbot': 100}
+
+armour = {'dragonslayer965': 0, 'irlightbrite': 0, 'akumaluffy': 0, 'windaskk': 0, 'elesevd': 0, 'ericirq.yeung': 0, 'live:biscuitsbot': 100}
+
+weapon = {'dragonslayer965': 0, 'irlightbrite': 0, 'akumaluffy': 0, 'windaskk': 0, 'elesevd': 0, 'ericirq.yeung': 0, 'live:biscuitsbot': 0}
+
+stimpack = {'dragonslayer965': 1, 'irlightbrite': 1, 'akumaluffy':1, 'windaskk':1, 'elesevd':1, 'ericirq.yeung':1, 'live:biscuitsbot': 0}
+
+shop = {'stimpack': 500, 'Terrible_Shotgun':5000, 'MIRV':50000, 'Vault101_Suit': 2500 , 'Power_Armour': 10000, 'Black_People_Pesticide': 500000}
 
 def commands(Message, Status):
+
     if Status == 'SENT' or (Status == 'RECEIVED'):
         msg = Message.Body.lower()
         body = Message.Body
+        bottlecaps[Message.Sender.Handle] = bottlecaps[Message.Sender.Handle] + 10
+        healthlost = 20 - armour[Message.Sender.Handle]
+
         if body == "#beep":
             cmd_test(Message)
         
@@ -34,28 +52,126 @@ def commands(Message, Status):
             cmd_help(Message)
         
         elif body.startswith("#tldr"):            
-        	cmd_tldr(Message)
+            cmd_tldr(Message)
 
-        elif body.startswith("#stopbot"):
-            Message.Chat.SendMessage('>> Sleeping... for a while')
+        elif body.startswith("#sleep"):
+            splitMessage = body.strip().split(" ")
+            sleeptime = splitMessage[1]
+            sleepint = int(float(sleeptime))
+            Message.Chat.SendMessage('>> Sleeping... for' + sleepint + 'minutes')
+            time.sleep(sleepint) # seconds 
             print "Script paused..."
-            time.sleep(60.*1.) # 30 = 30 minutes
             Message.Chat.SendMessage('>> BiscuitsBot is awake!')
             print "Script resumed."
 
         elif body.startswith("#killbot"):
-            Message.Chat.SendMessage('>> TOXIC COMMAND, UNABLE TO TERMINATE')
-            #os._exit(0)
+            splitMessage = body.strip().split(" ") # splits the message into command and argument
+            secretpassword = splitMessage[1]
+            if secretpassword == ("kappa123"):
+                Message.Chat.SendMessage('>> Correct password, goodbye!')
+                #os._exit(0)
+                Message.Chat.SendMessage('>> JUST KIDDING') 
+            else: 
+                Message.Chat.SendMessage('>> WRONG PASSWORD, UNABLE TO TERMINATE')
 
         elif body.startswith("#call"):
             #GetCallWith()
-            Message.Chat.SendMessage('>> Sorry! This feature is not yet available. Please contact Ryan.')
+            Message.Chat.SendMessage('>> Sorry! This feature is not yet available.')
 
-        elif body.startswith("#checkin") and Status == "RECEIVED":
-            Message.Chat.SendMessage('>> Hello human/machine, thanks for checking in!') 
+        elif body.startswith("#checkin") and Status == "RECEIVED": 
+            Message.Chat.SendMessage(">> Thanks for checking in, " + Message.Sender.Handle + "!") 
 
         elif body.startswith("#checkout"):
-            Message.Chat.SendMessage('>> Bye human!')
+            Message.Chat.SendMessage(">> Bye " + Message.Sender.Handle + "!")
+
+        elif body.startswith("Moji"):
+            Message.Chat.SendMessage("EMOJI DETECTED")
+
+        elif body.startswith("#bottlecap"):
+            Message.Chat.SendMessage(Message.Sender.Handle + ", you have " + str(bottlecaps[Message.Sender.Handle]) + " bottlecaps!")
+        
+        elif body.startswith("#explore"):
+            bottlecaps[Message.Sender.Handle] = bottlecaps[Message.Sender.Handle] - 50  
+            Message.Chat.SendMessage("You started exploring (-50 bottlecaps)!")
+            tempz = rand.randrange(1, 51)
+            Message.Chat.SendMessage("You rolled a " + str(tempz) + ".")
+
+            if tempz + weapon[Message.Sender.Handle] <= 35:
+                health[Message.Sender.Handle] = health[Message.Sender.Handle] - healthlost
+                Message.Chat.SendMessage("You got injured! Lost " + str(healthlost) + " health.")
+            
+                if health[Message.Sender.Handle] <= 0:
+                    bottlecaps[Message.Sender.Handle] = bottlecaps[Message.Sender.Handle]/2  
+                    Message.Chat.SendMessage("You have died! Lost half of your bottlecaps.") 
+                    health[Message.Sender.Handle] = health[Message.Sender.Handle] + 60 
+
+            else:
+                bottlecaps[Message.Sender.Handle] = bottlecaps[Message.Sender.Handle] + tempz*5
+                Message.Chat.SendMessage("Found " + str(tempz*5) + " bottlecaps! (always lucky)")            
+
+        elif body.startswith("#shop"):
+            Message.Chat.SendMessage("Stimpack: 500 \nTerrible_Shotgun: 5000 \nMIRV: 50000 \nVault101_Suit: 2500 \nPower_Armour: 10000 \nBlack_People_Pesticide: 500000")
+           
+        elif body.startswith("#stats"):
+            Message.Chat.SendMessage("You have " + str(health[Message.Sender.Handle]) + " health.")    
+            Message.Chat.SendMessage("You have " + str(weapon[Message.Sender.Handle]) + " attack.")    
+
+        elif body.startswith("#buy"):
+            splitMessage = body.strip().split(" ")
+            item = splitMessage[1]
+            if (bottlecaps[Message.Sender.Handle] - shop[item]) <= 0:
+                Message.Chat.SendMessage("You don't have enough bottlecaps!")
+
+            else:  
+                bottlecaps[Message.Sender.Handle] = bottlecaps[Message.Sender.Handle] - shop[item]                
+                
+                if (item == "stimpack"):
+                    stimpack[Message.Sender.Handle] = stimpack[Message.Sender.Handle] + 1
+                    Message.Chat.SendMessage("You now have a " + item + "!") 
+                
+                elif (item == "Terrible_Shotgun"):
+                    weapon[Message.Sender.Handle] = weapon[Message.Sender.Handle] + 5
+                    Message.Chat.SendMessage("You now have a " + item + "(5 attack)!")    
+              
+                elif (item == "MIRV"):
+                    weapon[Message.Sender.Handle] = weapon[Message.Sender.Handle] + 10 
+                    Message.Chat.SendMessage("You now have a " + item + "(10 attack)!")                         
+
+                elif (item == "Black_People_Pessticide"):
+                    weapon[Message.Sender.Handle] = weapon[Message.Sender.Handle] + 20 
+                    Message.Chat.SendMessage("You now have a " + item + "(20 attack)!")     
+
+                elif (item == "Vault101_Suit"):
+                    armour[Message.Sender.Handle] = armour[Message.Sender.Handle] + 5
+                    Message.Chat.SendMessage("You now have a " + item + "(5 armour)!")     
+
+                elif (item == "Power_Armour"):
+                    armour[Message.Sender.Handle] = armour[Message.Sender.Handle] + 10
+                    Message.Chat.SendMessage("You now have a " + item + "(10 armour)!")     
+        
+                health[Message.Sender.Handle] = health[Message.Sender.Handle] - 50
+        elif body.startswith("#deathclaw"):
+            Message.Chat.SendMessage("First turn, deathclaw attacks first!")
+            tempx = rand.randrange(1, 101)
+            if tempx + armour[Message.Sender.Handle] <= 51:
+                Message.Chat.SendMessage("You're crippled! Lost 50 health.") 
+                
+        elif body.startswith("#heal"):
+            if stimpack[Message.Sender.Handle] > 0:
+                health[Message.Sender.Handle] = health[Message.Sender.Handle] + 50
+                
+                if health[Message.Sender.Handle] > 100:
+                    health[Message.Sender.Handle] = 100        
+
+                stimpack[Message.Sender.Handle] = stimpack[Message.Sender.Handle] - 1
+                Message.Chat.SendMessage("Restored 50 health. \n" + str(stimpack[Message.Sender.Handle]) + " stimpacks left.")
+            else:
+                Message.Chat.SendMessage("No stimpacks! Buy one from the store.")
+
+        elif body.startswith("#leaderboard"):
+            sorting = sorted(bottlecaps.items(), key = lambda x: x[1], reverse = True)
+            print sorting
+            Message.Chat.SendMessage(sorting)
 
         else:
             pass
@@ -72,21 +188,25 @@ def cmd_test(Message):
     print "Testing complete.\n"
 
 def cmd_help(Message):
-    Message.Chat.SendMessage('>> #beep for beep boops')
-    Message.Chat.SendMessage('>> #poll for arena help')
-    Message.Chat.SendMessage('>> #tldr for article summarys [in progress]')
+    Message.Chat.SendMessage('>> #tldr for article summarys')
     Message.Chat.SendMessage('>> #stopbot to put BiscuitsBot to sleep')
-    Message.Chat.SendMessage('>> #call for group calls [do not use this yet]')
     Message.Chat.SendMessage('>> #killbot to murder BiscuitsBot')
+    Message.Chat.SendMessage('>> RPG COMMANDS BELOW')
+    Message.Chat.SendMessage('>> #bottlecap to check your bottlecap balance. (You get 10 per message)')
+    Message.Chat.SendMessage('>> #explore to get potential bottlecaps (40% chance for success)')
+    Message.Chat.SendMessage('>> #heal to use a stimpack and regain 50 health')
+    Message.Chat.SendMessage('>> #stats to check your health and attack')
+    Message.Chat.SendMessage('>> #shop to go shopping')
+    Message.Chat.SendMessage('>> #buy to buy stuff')
+    Message.Chat.SendMessage('>> #leaderboard to check the bottlecap rankings')
 
-import random as rand
 arena_cards = ["first card","second card","third card"]
 
 def getpollanswer():
     return arena_cards[rand.randint(0,2)]
 
 def cmd_poll(Message):
-    Message.Chat.SendMessage(">> choose the" + getpollanswer())
+    Message.Chat.SendMessage(">> choose the " + getpollanswer())
 
 class TaskThread(threading.Thread):
 
@@ -121,7 +241,7 @@ skypeClient.OnMessageStatus = commands
 
 task =TaskThread(print_checkin, members)
 task.run()
-    
+
 if __name__ == "__main__":
     main()
             
