@@ -22,13 +22,17 @@ def print_checkin(participants):
             #elem.SendMessage(">> I am BiscuitsBot")
  
 # Initial currency (should have a file to r/w)
-bottlecaps = {'dragonslayer965': 100, 'irlightbrite': 100, 'akumaluffy':100, 'windaskk':100, 'elesevd':100, 'ericirq.yeung':100, 'live:biscuitsbot':1000000000000}
+bottlecaps = {'dragonslayer965': 100, 'irlightbrite': 100, 'akumaluffy':340, 'windaskk':100, 'elesevd':920, 'ericirq.yeung':300, 'live:biscuitsbot': 100}
  
-health = {'dragonslayer965': 100, 'irlightbrite': 100, 'akumaluffy':100, 'windaskk':100, 'elesevd':100, 'ericirq.yeung':100, 'live:biscuitsbot':100}
+health = {'dragonslayer965': 100, 'irlightbrite': 100, 'akumaluffy':100, 'windaskk':100, 'elesevd':100, 'ericirq.yeung':100, 'live:biscuitsbot': 100}
  
-stimpack = {'dragonslayer965': 1, 'irlightbrite': 1, 'akumaluffy':1, 'windaskk':1, 'elesevd':1, 'ericirq.yeung':1, 'live:biscuitsbot':1}
+armour = {'dragonslayer965': 0, 'irlightbrite': 0, 'akumaluffy': 0, 'windaskk': 0, 'elesevd': 0, 'ericirq.yeung': 0, 'live:biscuitsbot': 100}
  
-shop = {'stimpack': 100, 'Terrible_Shotgun':500, 'MIRV':1000, 'Power_Armour': 10000, 'Black_People_Pesticide': 50000  }
+weapon = {'dragonslayer965': 0, 'irlightbrite': 0, 'akumaluffy': 0, 'windaskk': 0, 'elesevd': 0, 'ericirq.yeung': 0, 'live:biscuitsbot': 0}
+ 
+stimpack = {'dragonslayer965': 1, 'irlightbrite': 1, 'akumaluffy':1, 'windaskk':1, 'elesevd':1, 'ericirq.yeung':1, 'live:biscuitsbot': 0}
+ 
+shop = {'stimpack': 400, 'Terrible_Shotgun':5000, 'MIRV':50000, 'Vault101_Suit': 2500 , 'Power_Armour': 10000, 'Black_People_Pesticide': 500000}
  
 def commands(Message, Status):
  
@@ -87,10 +91,10 @@ def commands(Message, Status):
        
         elif body.startswith("#explore"):
             Message.Chat.SendMessage("You started exploring!")
-            tempz = rand.randrange(10, 21)
+            tempz = rand.randrange(1, 51)
             Message.Chat.SendMessage("You rolled a " + str(tempz) + " .")
  
-            if tempz <= 15:
+            if tempz + weapon[Message.Sender.Handle] <= 30:
                 health[Message.Sender.Handle] = health[Message.Sender.Handle] - 20
                 Message.Chat.SendMessage("You got injured! Lost 20 health.")
            
@@ -104,10 +108,11 @@ def commands(Message, Status):
                 Message.Chat.SendMessage("Found " + str(tempz*10) + " bottlecaps! (always lucky)")            
  
         elif body.startswith("#shop"):
-            Message.Chat.SendMessage("Stimpack: 100 \nTerrible_Shotgun: 500 \nMIRV: 1000 \nPower_Armour: 10000 \nBlack_People_Pesticide: 50000")
+            Message.Chat.SendMessage("Stimpack: 100 \nTerrible_Shotgun: 500 \nMIRV: 1000 \nVault101_Suit \nPower_Armour: 10000 \nBlack_People_Pesticide: 50000")
            
-        elif body.startswith("#health"):
+        elif body.startswith("#stats"):
             Message.Chat.SendMessage("You have " + str(health[Message.Sender.Handle]) + " health.")    
+            Message.Chat.SendMessage("You have " + str(weapon[Message.Sender.Handle]) + " attack.")    
  
         elif body.startswith("#buy"):
             splitMessage = body.strip().split(" ")
@@ -120,11 +125,37 @@ def commands(Message, Status):
                
                 if (item == "stimpack"):
                     stimpack[Message.Sender.Handle] = stimpack[Message.Sender.Handle] + 1
-                    Message.Chat.SendMessage("You now have a " + item + " !")
-                     
-                else:
-                    Message.Chat.SendMessage("You now have a " + item + " !")    
+                    Message.Chat.SendMessage("You now have a " + item + "!")
+               
+                elif (item == "Terrible_Shotgun"):
+                    weapon[Message.Sender.Handle] = weapon[Message.Sender.Handle] + 1
+                    Message.Chat.SendMessage("You now have a " + item + "!")    
+             
+                elif (item == "MIRV"):
+                    weapon[Message.Sender.Handle] = weapon[Message.Sender.Handle] + 5
+                    Message.Chat.SendMessage("You now have a " + item + "!")                        
  
+                elif (item == "Black_People_Pesticide"):
+                    weapon[Message.Sender.Handle] = weapon[Message.Sender.Handle] + 10
+                    Message.Chat.SendMessage("You now have a " + item + "!")    
+ 
+                elif (item == "Vault101_Suit"):
+                    health[Message.Sender.Handle] = health[Message.Sender.Handle] + 10
+                    armour[Message.Sender.Handle] = armour[Message.Sender.Handle] + 10
+                    Message.Chat.SendMessage("You now have a " + item + "!")    
+ 
+                elif (item == "Power_Armour"):
+                    health[Message.Sender.Handle] = health[Message.Sender.Handle] + 50
+                    armour[Message.Sender.Handle] = armour[Message.Sender.Handle] + 50
+                    Message.Chat.SendMessage("You now have a " + item + "!")    
+       
+        elif body.startswith("#deathclaw"):
+            Message.Chat.SendMessage("First turn, deathclaw attacks first!")
+            tempx = rand.randrange(1, 101)
+            if tempx + armour[Message.Sender.Handle] <= 51:
+                health[Message.Sender.Handle] = health[Message.Sender.Handle] - 50
+                Message.Chat.SendMessage("You're crippled! Lost 50 health.")
+               
         elif body.startswith("#heal"):
             if stimpack[Message.Sender.Handle] > 0:
                 health[Message.Sender.Handle] = health[Message.Sender.Handle] + 50
@@ -165,7 +196,6 @@ def cmd_help(Message):
     Message.Chat.SendMessage('>> #buy to buy stuff')
     Message.Chat.SendMessage('>> #leaderboard to check the bottlecap rankings')
  
-import random as rand
 arena_cards = ["first card","second card","third card"]
  
 def getpollanswer():
