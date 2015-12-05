@@ -40,6 +40,7 @@ def commands(Message, Status):
         msg = Message.Body.lower()
         body = Message.Body
         bottlecaps[Message.Sender.Handle] = bottlecaps[Message.Sender.Handle] + 10
+        bannedlist = []        
         healthlost = 20 - armour[Message.Sender.Handle]
 
         if body == "#beep":
@@ -90,7 +91,7 @@ def commands(Message, Status):
         elif body.startswith("#bottlecap"):
             Message.Chat.SendMessage(Message.Sender.Handle + ", you have " + str(bottlecaps[Message.Sender.Handle]) + " bottlecaps!")
         
-        elif body.startswith("#explore"):
+        elif body.startswith("#explore") and (Message.Sender.Handle not in bannedlist):
             bottlecaps[Message.Sender.Handle] = bottlecaps[Message.Sender.Handle] - 50  
             Message.Chat.SendMessage("You started exploring (-50 bottlecaps)!")
             tempz = rand.randrange(1, 51)
@@ -103,7 +104,7 @@ def commands(Message, Status):
                 if health[Message.Sender.Handle] <= 0:
                     bottlecaps[Message.Sender.Handle] = bottlecaps[Message.Sender.Handle]/2  
                     Message.Chat.SendMessage("You have died! Lost half of your bottlecaps.") 
-                    health[Message.Sender.Handle] = health[Message.Sender.Handle] + 60 
+                    health[Message.Sender.Handle] = 50
 
             else:
                 bottlecaps[Message.Sender.Handle] = bottlecaps[Message.Sender.Handle] + tempz*5
@@ -172,6 +173,25 @@ def commands(Message, Status):
             sorting = sorted(bottlecaps.items(), key = lambda x: x[1], reverse = True)
             print sorting
             Message.Chat.SendMessage(sorting)
+
+        elif body.startswith("#debug") and Message.Sender.Handle == "ericirq.yeung":
+            print health; print armour; print weapon
+
+        elif body.startswith("#give") and Message.Sender.Handle == "ericirq.yeung":
+            splitMessage = body.strip().split(" ")
+            person = splitMessage[1]
+            amount = splitMessage[2]
+            bottlecaps[person] = bottlecaps[person] + int(amount)
+
+        elif body.startswith("#ban") and Message.Sender.Handle == "ericirq.yeung":
+            splitMessage = body.strip().split(" ")
+            person = splitMessage[1]
+            bannedlist.append("person")
+
+        elif body.startswith("#unban") and Message.Sender.Handle == "ericirq.yeung":
+            splitMessage = body.strip().split(" ")
+            person = splitMessage[1]
+            bannedlist.remove("person")
 
         else:
             pass
@@ -244,4 +264,3 @@ task.run()
 
 if __name__ == "__main__":
     main()
-            
