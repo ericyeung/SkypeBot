@@ -91,7 +91,7 @@ def commands(Message, Status):
         elif body.startswith("#bottlecap"):
             Message.Chat.SendMessage(Message.Sender.Handle + ", you have " + str(bottlecaps[Message.Sender.Handle]) + " bottlecaps!")
         
-        elif body.startswith("#explore") and (Message.Sender.Handle not in bannedlist):
+        elif body.startswith("#explore") and (str(Message.Sender.Handle) not in bannedlist):
             bottlecaps[Message.Sender.Handle] = bottlecaps[Message.Sender.Handle] - 50  
             Message.Chat.SendMessage("You started exploring (-50 bottlecaps)!")
             tempz = rand.randrange(1, 51)
@@ -185,13 +185,13 @@ def commands(Message, Status):
 
         elif body.startswith("#ban") and Message.Sender.Handle == "ericirq.yeung":
             splitMessage = body.strip().split(" ")
-            person = splitMessage[1]
-            bannedlist.append("person")
-
-        elif body.startswith("#unban") and Message.Sender.Handle == "ericirq.yeung":
-            splitMessage = body.strip().split(" ")
-            person = splitMessage[1]
-            bannedlist.remove("person")
+            person = str(splitMessage[1])
+            timeban = float(splitMessage[2])
+            bannedlist.append(person)
+            print bannedlist
+            time.sleep(timeban)
+            bannedlist.remove(person)            
+            print bannedlist  
 
         else:
             pass
