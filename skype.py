@@ -251,4 +251,4 @@ skypeClient.Attach()
 skypeClient.OnMessageStatus = commands 
 
 task =TaskThread(print_checkin, members)
-task.run() #
+task.run()
