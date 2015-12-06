@@ -19,3 +19,19 @@ These games still inspire me today, since I'm developing video games myself righ
 When I was younger, I was introduced to video games on the computer.
 >> The article title is "Satoru Iwata: why a generation is mourning the loss of Nintendo's CEO | U of T News"
 ```
+
+RPG Bot
+==============
+Get in-chat currency every time you type! Get bottlecaps to go exploring the wasteland for loot! 
+```
+#tldr for article summarys
+#stopbot to put BiscuitsBot to sleep
+#killbot to murder BiscuitsBot
+#bottlecap to check your bottlecap balance. (You get 10 per message)
+#explore to get potential bottlecaps (40% chance for success)
+#heal to use a stimpack and regain 50 health
+#stats to check your health and attack
+#shop to go shopping
+#buy to buy stuff
+#leaderboard to check the bottlecap rankings
+```
