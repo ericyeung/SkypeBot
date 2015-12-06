@@ -18,10 +18,7 @@ def print_checkin(participants):
         if not participantsList:
             print "Checking in."
             print (time.strftime("%H:%M:%S")) # timestamps for checkins
-            #elem.SendMessage("#checkin")
-            #elem.SendMessage(">> I am BiscuitsBot")
 
-# Initial currency (should have a file to r/w)
 bottlecaps = {'dragonslayer965': 1370, 'irlightbrite': 2660, 'akumaluffy':540, 'windaskk':2540, 'elesevd':760, 'ericirq.yeung':500, 'live:biscuitsbot': 100}
 
 health = {'dragonslayer965': 100, 'irlightbrite': 100, 'akumaluffy':100, 'windaskk':100, 'elesevd':100, 'ericirq.yeung':100, 'live:biscuitsbot': 100}
@@ -255,11 +252,3 @@ skypeClient.OnMessageStatus = commands
 
 task =TaskThread(print_checkin, members)
 task.run()
-
-"""
-elif body.startswith("#deathclaw"):
-Message.Chat.SendMessage("First turn, deathclaw attacks first!")
-tempx = rand.randrange(1, 101)
-if tempx + armour[MSH] <= 51:
-Message.Chat.SendMessage("You're crippled! Lost 50 health.") 
-"""                
