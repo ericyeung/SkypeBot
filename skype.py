@@ -22,7 +22,7 @@ def print_checkin(participants):
             #elem.SendMessage(">> I am BiscuitsBot")
 
 # Initial currency (should have a file to r/w)
-bottlecaps = {'dragonslayer965': 500, 'irlightbrite': 500, 'akumaluffy':500, 'windaskk':500, 'elesevd':500, 'ericirq.yeung':500, 'live:biscuitsbot': 100}
+bottlecaps = {'dragonslayer965': 1370, 'irlightbrite': 2660, 'akumaluffy':540, 'windaskk':2540, 'elesevd':760, 'ericirq.yeung':500, 'live:biscuitsbot': 100}
 
 health = {'dragonslayer965': 100, 'irlightbrite': 100, 'akumaluffy':100, 'windaskk':100, 'elesevd':100, 'ericirq.yeung':100, 'live:biscuitsbot': 100}
 
@@ -139,7 +139,7 @@ def commands(Message, Status):
                     weapon[MSH] += 10 
                     Message.Chat.SendMessage("You now have a " + item + "(10 attack)!")                         
 
-                elif (item == "Black_People_Pessticide"):
+                elif (item == "Black_People_Pesticide"):
                     weapon[MSH] += 20 
                     Message.Chat.SendMessage("You now have a " + item + "(20 attack)!")     
 
@@ -151,8 +151,6 @@ def commands(Message, Status):
                     armour[MSH] += 10
                     Message.Chat.SendMessage("You now have a " + item + "(10 armour)!")     
         
-                health[MSH] = health[MSH] - 50
-
         elif body.startswith("#heal"):
             if stimpack[MSH] > 0:
                 health[MSH] = health[MSH] + 50
@@ -173,13 +171,13 @@ def commands(Message, Status):
         elif body.startswith("#debug") and MSH == "ericirq.yeung":
             print health; print armour; print weapon
 
-        elif body.startswith("#give") and MSH == "ericirq.yeung":
+        elif body.startswith("#give") and (MSH == "ericirq.yeung" or MSH == "irlightbrite"):
             splitMessage = body.strip().split(" ")
             person = splitMessage[1]
             amount = splitMessage[2]
             bottlecaps[person] = bottlecaps[person] + int(amount)
 
-        elif body.startswith("#ban") and MSH == "ericirq.yeung":
+        elif body.startswith("#ban") and (MSH == "ericirq.yeung" or MSH == "irlightbrite"):
             splitMessage = body.strip().split(" ")
             person = str(splitMessage[1])
             timeban = float(splitMessage[2])
