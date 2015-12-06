@@ -19,7 +19,7 @@ def print_checkin(participants):
             print "Checking in."
             print (time.strftime("%H:%M:%S")) # timestamps for checkins
 
-bottlecaps = {'dragonslayer965': 1370, 'irlightbrite': 2660, 'akumaluffy':540, 'windaskk':2540, 'elesevd':760, 'ericirq.yeung':500, 'live:biscuitsbot': 100}
+bottlecaps = {'dragonslayer965': 1370, 'irlightbrite': 2660, 'akumaluffy':1540, 'windaskk':2540, 'elesevd':760, 'ericirq.yeung':5000000, 'live:biscuitsbot': 100}
 
 health = {'dragonslayer965': 100, 'irlightbrite': 100, 'akumaluffy':100, 'windaskk':100, 'elesevd':100, 'ericirq.yeung':100, 'live:biscuitsbot': 100}
 
@@ -29,7 +29,7 @@ weapon = {'dragonslayer965': 0, 'irlightbrite': 0, 'akumaluffy': 0, 'windaskk': 
 
 stimpack = {'dragonslayer965': 1, 'irlightbrite': 1, 'akumaluffy':1, 'windaskk':1, 'elesevd':1, 'ericirq.yeung':1, 'live:biscuitsbot': 0}
 
-shop = {'stimpack': 500, 'Terrible_Shotgun':5000, 'MIRV':50000, 'Vault101_Suit': 2500 , 'Power_Armour': 10000, 'Black_People_Pesticide': 500000}
+shop = {'stimpack': 500, 'Terrible_Shotgun':5000, 'MIRV':50000, 'Vault101': 2500 , 'Leather': 5000, 'Metal': 7500, 'Combat': 10000, 'Power': 12500, 'Black_People_Pesticide': 500000}
 
 def commands(Message, Status):
 
@@ -37,9 +37,8 @@ def commands(Message, Status):
         msg = Message.Body.lower()
         body = Message.Body
         MSH = Message.Sender.Handle
-        bottlecaps[MSH] += 10
+        bottlecaps[MSH] += 5
         bannedlist = []        
-        healthlost = 20 - armour[MSH]
 
         if body == "#beep":
             cmd_test(Message)
@@ -92,10 +91,11 @@ def commands(Message, Status):
         elif body.startswith("#explore") and (str(MSH) not in bannedlist):
             bottlecaps[MSH] -= 50  
             Message.Chat.SendMessage(MSH + " started exploring (-50 bottlecaps)!")
-            tempz = rand.randrange(1, 51)
+            tempz = rand.randrange(1, 101)
             Message.Chat.SendMessage(MSH + " rolled a " + str(tempz) + ".")
-
-            if tempz + weapon[MSH] <= 35:
+            healthlost = tempz*(20 - armour[MSH])/20
+         
+            if tempz + weapon[MSH] <= 70:
                 health[MSH] -= healthlost
                 Message.Chat.SendMessage(MSH + " got injured! Lost " + str(healthlost) + " health.")
             
@@ -108,11 +108,12 @@ def commands(Message, Status):
                 bottlecaps[MSH] += tempz*5
                 Message.Chat.SendMessage("Found " + str(tempz*5) + " bottlecaps! (always lucky)")            
 
-        elif body.startswith("#shop"):
-            Message.Chat.SendMessage("Stimpack: 500 \nTerrible_Shotgun: 5000 \nMIRV: 50000 \nVault101_Suit: 2500 \nPower_Armour: 10000 \nBlack_People_Pesticide: 500000")
+        elif body.startswith("#shop") or body.startswith("#store"):
+            Message.Chat.SendMessage("Stimpack: 500 \nTerrible_Shotgun: 5000 \nMIRV: 50000 \nBlack_People_Pesticide: 500000 \nVault101: 2500 \nLeather: 5000 \nMetal: 7500 \nCombat: 10000 \nPower: 10000")
            
         elif body.startswith("#stats"):
             Message.Chat.SendMessage("You have " + str(health[MSH]) + " health.")    
+            Message.Chat.SendMessage("You have " + str(armour[MSH]) + " armour.")    
             Message.Chat.SendMessage("You have " + str(weapon[MSH]) + " attack.")    
 
         elif body.startswith("#buy"):
@@ -140,13 +141,25 @@ def commands(Message, Status):
                     weapon[MSH] += 20 
                     Message.Chat.SendMessage("You now have a " + item + "(20 attack)!")     
 
-                elif (item == "Vault101_Suit"):
-                    armour[MSH] += 5
-                    Message.Chat.SendMessage("You now have a " + item + "(5 armour)!")     
+                elif (item == "Vault101"):
+                    armour[MSH] += 3
+                    Message.Chat.SendMessage("You now have a " + item + "(3 armour)!")     
 
-                elif (item == "Power_Armour"):
-                    armour[MSH] += 10
-                    Message.Chat.SendMessage("You now have a " + item + "(10 armour)!")     
+                elif (item == "Leather"):
+                    armour[MSH] += 6
+                    Message.Chat.SendMessage("You now have a " + item + "(6 armour)!")     
+
+                elif (item == "Metal"):
+                    armour[MSH] += 9
+                    Message.Chat.SendMessage("You now have a " + item + "(9 armour)!")     
+
+                elif (item == "Combat"):
+                    armour[MSH] += 12
+                    Message.Chat.SendMessage("You now have a " + item + "(12 armour)!")     
+
+                elif (item == "Power"):
+                    armour[MSH] += 15
+                    Message.Chat.SendMessage("You now have a " + item + "(15 armour)!")     
         
         elif body.startswith("#heal"):
             if stimpack[MSH] > 0:
