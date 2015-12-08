@@ -1,4 +1,5 @@
 #!/usr/bin/python
+from __future__ import division
 import Skype4Py
 import threading
 import httplib2, json
@@ -7,6 +8,7 @@ import random as rand
 from tldr import cmd_tldr
 from allotrope import allotrope
 from buy import buy
+from helplist import cmd_help 
 
 def print_checkin(participants):
 
@@ -94,7 +96,7 @@ def commands(Message, Status):
                 tempz = rand.randrange(1, 101)
                 Message.Chat.SendMessage(MSH + " rolled a " + str(tempz) + ".")
                 healthlost = tempz*(20 - armour[MSH])/20
-             
+
                 if tempz + weapon[MSH] <= 70:
                     health[MSH] -= healthlost
                     Message.Chat.SendMessage(MSH + " got injured! Lost " + str(healthlost) + " health.")
@@ -103,13 +105,21 @@ def commands(Message, Status):
                         bottlecaps[MSH] /= 2  
                         Message.Chat.SendMessage(MSH + " has died! You lost half of your bottlecaps.") 
                         health[MSH] = 50
+                    
+                    else:
+                        bannedlist.append(MSH) # Time out... (might time out all users)
+                        time.sleep(60*5) # 5 Minutes
+                        bannedlist.remove(MSH) # Untime out
 
                 else:
                     bottlecaps[MSH] += tempz*5
-                    Message.Chat.SendMessage("Found " + str(tempz*5) + " bottlecaps! (always lucky)")            
+                    Message.Chat.SendMessage("Found " + str(tempz*5) + " bottlecaps! (always lucky)")           
+                    bannedlist.append(MSH) # Time out...
+                    time.sleep(60*5) # 5 Minutes
+                    bannedlist.remove(MSH) # Untime out
 
         elif body.startswith("#shop") or body.startswith("#store"):
-            Message.Chat.SendMessage("Stimpack: 500 \nTerrible_Shotgun: 5000 \nMIRV: 50000 \nBlack_People_Pesticide: 500000 \nVault101: 2500 \nLeather: 5000 \nMetal: 7500 \nCombat: 10000 \nPower: 10000")
+            Message.Chat.SendMessage("Stimpack: 500 \nTerrible_Shotgun: 5000 \nMIRV: 50000 \nBlack_People_Pesticide: 500000 \nVault101: 2500 \nLeather: 5000 \nMetal: 7500 \nCombat: 10000 \nPower: 12500")
            
         elif body.startswith("#stats"):
             Message.Chat.SendMessage("You have " + str(health[MSH]) + " health.")    
@@ -155,19 +165,6 @@ def commands(Message, Status):
             pass
     else:
         pass
-
-def cmd_help(Message):
-    Message.Chat.SendMessage('>> #tldr for article summarys')
-    Message.Chat.SendMessage('>> #stopbot to put BiscuitsBot to sleep')
-    Message.Chat.SendMessage('>> #killbot to murder BiscuitsBot')
-    Message.Chat.SendMessage('>> RPG COMMANDS BELOW')
-    Message.Chat.SendMessage('>> #bottlecap to check your bottlecap balance. (You get 10 per message)')
-    Message.Chat.SendMessage('>> #explore to get potential bottlecaps (40% chance for success)')
-    Message.Chat.SendMessage('>> #heal to use a stimpack and regain 50 health')
-    Message.Chat.SendMessage('>> #stats to check your health and attack')
-    Message.Chat.SendMessage('>> #shop to go shopping')
-    Message.Chat.SendMessage('>> #buy to buy stuff')
-    Message.Chat.SendMessage('>> #leaderboard to check the bottlecap rankings')
 
 class TaskThread(threading.Thread):
 
