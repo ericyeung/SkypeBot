@@ -94,7 +94,7 @@ def commands(Message, Status):
 
             else:    
                 bottlecaps[MSH] -= 25  
-                bottlecaps[ericirq.yeung] += 25
+                bottlecaps["ericirq.yeung"] += 25
                 Message.Chat.SendMessage(MSH + " started exploring (-25 bottlecaps)!")
                 tempz = rand.randrange(1, 101)
                 Message.Chat.SendMessage(MSH + " rolled a " + str(tempz) + ".")
@@ -138,7 +138,7 @@ def commands(Message, Status):
             splitMessage = body.strip().split(" ")
             payback = splitMessage[1]
             bankdebt[MSH] -= payback
-            bottlecaps[ericirq.yeung] += payback
+            bottlecaps["ericirq.yeung"] += payback
             Message.Chat.SendMessage(MSH + "paid back " + str(payback) + " bottlecaps.")    
 
         elif body.startswith("#stats"):
