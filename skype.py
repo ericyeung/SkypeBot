@@ -23,11 +23,11 @@ def print_checkin(participants):
             #print "Checking in."
             #print (time.strftime("%H:%M:%S")) # timestamps for checkins
 
-bottlecaps = {'dragonslayer965': 1370, 'irlightbrite': 2660, 'akumaluffy':1540, 'windaskk':2540, 'elesevd':760, 'ericirq.yeung':5000000, 'live:biscuitsbot': 100}
+bottlecaps = {'dragonslayer965': 8385, 'irlightbrite': 6610, 'akumaluffy':2995, 'windaskk':6270, 'elesevd':3748, 'ericirq.yeung':1425, 'live:biscuitsbot': 5145}
 
 health = {'dragonslayer965': 100, 'irlightbrite': 100, 'akumaluffy':100, 'windaskk':100, 'elesevd':100, 'ericirq.yeung':100, 'live:biscuitsbot': 100}
 
-armour = {'dragonslayer965': 0, 'irlightbrite': 0, 'akumaluffy': 0, 'windaskk': 0, 'elesevd': 0, 'ericirq.yeung': 0, 'live:biscuitsbot': 100}
+armour = {'dragonslayer965': 0, 'irlightbrite': 15, 'akumaluffy': 3, 'windaskk': 0, 'elesevd': 0, 'ericirq.yeung': 0, 'live:biscuitsbot': 100}
 
 weapon = {'dragonslayer965': 0, 'irlightbrite': 0, 'akumaluffy': 0, 'windaskk': 0, 'elesevd': 0, 'ericirq.yeung': 0, 'live:biscuitsbot': 0}
 
@@ -87,12 +87,13 @@ def commands(Message, Status):
         
         elif body.startswith("#explore") and (str(MSH) not in bannedlist):
             
-            if (bottlecaps[MSH] - 50) <= 0:
+            if (bottlecaps[MSH] - 25) <= 0:
                 Message.Chat.SendMessage("You don't have enough bottlecaps!")
 
             else:    
-                bottlecaps[MSH] -= 50  
-                Message.Chat.SendMessage(MSH + " started exploring (-50 bottlecaps)!")
+                bottlecaps[MSH] -= 25  
+                bottlecaps[ericirq.yeung] += 25
+                Message.Chat.SendMessage(MSH + " started exploring (-25 bottlecaps)!")
                 tempz = rand.randrange(1, 101)
                 Message.Chat.SendMessage(MSH + " rolled a " + str(tempz) + ".")
                 healthlost = tempz*(20 - armour[MSH])/20
@@ -105,18 +106,10 @@ def commands(Message, Status):
                         bottlecaps[MSH] /= 2  
                         Message.Chat.SendMessage(MSH + " has died! You lost half of your bottlecaps.") 
                         health[MSH] = 50
-                    
-                    else:
-                        bannedlist.append(MSH) # Time out... (might time out all users)
-                        time.sleep(60*5) # 5 Minutes
-                        bannedlist.remove(MSH) # Untime out
 
                 else:
-                    bottlecaps[MSH] += tempz*5
-                    Message.Chat.SendMessage("Found " + str(tempz*5) + " bottlecaps! (always lucky)")           
-                    bannedlist.append(MSH) # Time out...
-                    time.sleep(60*5) # 5 Minutes
-                    bannedlist.remove(MSH) # Untime out
+                    bottlecaps[MSH] += tempz*7
+                    Message.Chat.SendMessage("Found " + str(tempz*7) + " bottlecaps! (always lucky)")           
 
         elif body.startswith("#shop") or body.startswith("#store"):
             Message.Chat.SendMessage("Stimpack: 500 \nTerrible_Shotgun: 5000 \nMIRV: 50000 \nBlack_People_Pesticide: 500000 \nVault101: 2500 \nLeather: 5000 \nMetal: 7500 \nCombat: 10000 \nPower: 12500")
@@ -147,7 +140,9 @@ def commands(Message, Status):
             Message.Chat.SendMessage(sorting)
 
         elif body.startswith("#debug") and MSH == "ericirq.yeung":
-            print health; print armour; print weapon
+            Message.Chat.SendMessage(health)
+            Message.Chat.SendMessage(armour)
+            Message.Chat.SendMessage(weapon)
 
         elif body.startswith("#give") and (MSH == "ericirq.yeung" or MSH == "irlightbrite"):
             splitMessage = body.strip().split(" ")
