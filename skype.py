@@ -27,13 +27,15 @@ bottlecaps = {'dragonslayer965': 8385, 'irlightbrite': 6610, 'akumaluffy':2995, 
 
 health = {'dragonslayer965': 100, 'irlightbrite': 100, 'akumaluffy':100, 'windaskk':100, 'elesevd':100, 'ericirq.yeung':100, 'live:biscuitsbot': 100}
 
-armour = {'dragonslayer965': 0, 'irlightbrite': 15, 'akumaluffy': 3, 'windaskk': 0, 'elesevd': 0, 'ericirq.yeung': 0, 'live:biscuitsbot': 100}
+armour = {'dragonslayer965': 0, 'irlightbrite': 15, 'akumaluffy': 3, 'windaskk': 0, 'elesevd': 3, 'ericirq.yeung': 3, 'live:biscuitsbot': 100}
 
-weapon = {'dragonslayer965': 0, 'irlightbrite': 0, 'akumaluffy': 0, 'windaskk': 0, 'elesevd': 0, 'ericirq.yeung': 0, 'live:biscuitsbot': 0}
+weapon = {'dragonslayer965': 0, 'irlightbrite': 0, 'akumaluffy': 0, 'windaskk': 0, 'elesevd': 10, 'ericirq.yeung': 0, 'live:biscuitsbot': 0}
 
 stimpack = {'dragonslayer965': 1, 'irlightbrite': 1, 'akumaluffy':1, 'windaskk':1, 'elesevd':1, 'ericirq.yeung':1, 'live:biscuitsbot': 0}
 
 shop = {'stimpack': 500, 'Terrible_Shotgun':5000, 'MIRV':50000, 'Vault101': 2500 , 'Leather': 5000, 'Metal': 7500, 'Combat': 10000, 'Power': 12500, 'Black_People_Pesticide': 500000}
+
+bankdebt = {'dragonslayer965': 0, 'irlightbrite': 0, 'akumaluffy':0, 'windaskk':0, 'elesevd':0, 'ericirq.yeung':0, 'live:biscuitsbot': 0}
 
 def commands(Message, Status):
 
@@ -113,7 +115,32 @@ def commands(Message, Status):
 
         elif body.startswith("#shop") or body.startswith("#store"):
             Message.Chat.SendMessage("Stimpack: 500 \nTerrible_Shotgun: 5000 \nMIRV: 50000 \nBlack_People_Pesticide: 500000 \nVault101: 2500 \nLeather: 5000 \nMetal: 7500 \nCombat: 10000 \nPower: 12500")
-           
+        
+        elif body.startswith("#bank"):
+            Message.Chat.SendMessage("Welcome to the Iron Bank of Braavos!")
+            Message.Chat.SendMessage("Type #getloan <amount> to get a loan!")
+            Message.Chat.SendMessage("Type #payloan <amount> to pay back your debt!")
+            Message.Chat.SendMessage("If you are >2000 bottlecaps in debt, we will fund your enemies.")
+
+        elif body.startswith("#getloan"):
+            splitMessage = body.strip().split(" ")
+            loanamount = splitMessage[1]
+
+            if loanamount <= 2000 and bankdebt[MSH] <= 2000: 
+                bottlecaps[MSH] += loanamount
+                bankdebt[MSH] += loanamount
+                Message.Chat.SendMessage(MSH + "borrowed " + str(loanamount) + " bottlecaps.")    
+
+            else:
+                Message.Chat.SendMessage("You are trying to borrow too much.")    
+
+        elif body.startswith("#payloan"):
+            splitMessage = body.strip().split(" ")
+            payback = splitMessage[1]
+            bankdebt[MSH] -= payback
+            bottlecaps[ericirq.yeung] += payback
+            Message.Chat.SendMessage(MSH + "paid back " + str(payback) + " bottlecaps.")    
+
         elif body.startswith("#stats"):
             Message.Chat.SendMessage("You have " + str(health[MSH]) + " health.")    
             Message.Chat.SendMessage("You have " + str(armour[MSH]) + " armour.")    
