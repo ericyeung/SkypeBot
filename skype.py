@@ -19,7 +19,7 @@ def print_checkin(participants):
             print "Checking in."
             print (time.strftime("%H:%M:%S")) # timestamps for checkins
 
-bottlecaps = {'dragonslayer965': 5370, 'irlightbrite': 2660, 'akumaluffy':1540, 'windaskk':2540, 'elesevd':760, 'ericirq.yeung':2000, 'live:biscuitsbot': 0}
+bottlecaps = {'dragonslayer965': 13480, 'irlightbrite': 18920, 'akumaluffy':4155, 'windaskk':8855, 'elesevd':5135, 'ericirq.yeung':5340, 'live:biscuitsbot': 0}
 
 health = {'dragonslayer965': 100, 'irlightbrite': 100, 'akumaluffy':100, 'windaskk':100, 'elesevd':100, 'ericirq.yeung':100, 'live:biscuitsbot': 100}
 
@@ -36,8 +36,10 @@ bankdebt = {'dragonslayer965': 0, 'irlightbrite': 0, 'akumaluffy':0, 'windaskk':
 def commands(Message, Status):
 
     if Status == 'SENT' or (Status == 'RECEIVED'):
+        file = open("chatlog.txt", "w")
         msg = Message.Body.lower()
         body = Message.Body
+        file.write(body + "\n")
         MSH = Message.Sender.Handle
         bottlecaps[MSH] += 5
         #bannedlist = []        
