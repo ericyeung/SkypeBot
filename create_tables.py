@@ -13,17 +13,17 @@ table = dynamodb.create_table(
         },
         {
             'AttributeName': 'date',
-            'KeyType': 'RANGE'  #Partition key
+            'KeyType': 'RANGE'  #Sort key
         }
     ],
     AttributeDefinitions=[
         {
             'AttributeName': 'chat',
-            'AttributeType': 'S'  #Partition key
+            'AttributeType': 'S'  #String
         },
         {
             'AttributeName': 'date',
-            'AttributeType': 'N'
+            'AttributeType': 'N' #Number
         }
     ],
     ProvisionedThroughput={
