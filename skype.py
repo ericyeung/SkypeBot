@@ -19,33 +19,60 @@ def print_checkin(participants):
             print "Checking in."
             print (time.strftime("%H:%M:%S")) # timestamps for checkins
 
-bottlecaps = {'dragonslayer965': 13480, 'irlightbrite': 18920, 'akumaluffy':4155, 'windaskk':8855, 'elesevd':5135, 'ericirq.yeung':5340, 'live:biscuitsbot': 0}
+bottlecaps = {'dragonslayer965': 5370, 'irlightbrite': 5000, 'akumaluffy':1540, 'windaskk':2540, 'elesevd':760, 'ericirq.yeung':2000, 'live:biscuitsbot': 0, 'markpjin':3000, 'daskbot':0}
 
-health = {'dragonslayer965': 100, 'irlightbrite': 100, 'akumaluffy':100, 'windaskk':100, 'elesevd':100, 'ericirq.yeung':100, 'live:biscuitsbot': 100}
+health = {'dragonslayer965': 100, 'irlightbrite': 100, 'akumaluffy':100, 'windaskk':100, 'elesevd':100, 'ericirq.yeung':100, 'live:biscuitsbot': 100, 'markpjin':100, 'daskbot':0}
 
-armour = {'dragonslayer965': 0, 'irlightbrite': 12, 'akumaluffy': 3, 'windaskk': 0, 'elesevd': 0, 'ericirq.yeung': 0, 'live:biscuitsbot': 100}
+armour = {'dragonslayer965': 0, 'irlightbrite': 12, 'akumaluffy': 3, 'windaskk': 0, 'elesevd': 0, 'ericirq.yeung': 0, 'live:biscuitsbot': 100, 'markpjin':0, 'daskbot':0}
 
-weapon = {'dragonslayer965': 0, 'irlightbrite': 0, 'akumaluffy': 0, 'windaskk': 0, 'elesevd': 0, 'ericirq.yeung': 0, 'live:biscuitsbot': 0}
+weapon = {'dragonslayer965': 0, 'irlightbrite': 0, 'akumaluffy': 0, 'windaskk': 0, 'elesevd': 0, 'ericirq.yeung': 0, 'live:biscuitsbot': 0, 'markpjin':0, 'daskbot':0}
 
-stimpack = {'dragonslayer965': 1, 'irlightbrite': 1, 'akumaluffy':1, 'windaskk':1, 'elesevd':1, 'ericirq.yeung':1, 'live:biscuitsbot': 0}
+stimpack = {'dragonslayer965': 1, 'irlightbrite': 1, 'akumaluffy':1, 'windaskk':1, 'elesevd':1, 'ericirq.yeung':1, 'live:biscuitsbot': 0, 'markpjin':1, 'daskbot':1}
 
 shop = {'stimpack': 500, 'Terrible_Shotgun':5000, 'MIRV':50000, 'Vault101': 2500 , 'Leather': 5000, 'Metal': 7500, 'Combat': 10000, 'Power': 12500, 'Black_People_Pesticide': 500000}
 
-bankdebt = {'dragonslayer965': 0, 'irlightbrite': 0, 'akumaluffy':0, 'windaskk':0, 'elesevd':0, 'ericirq.yeung':0, 'live:biscuitsbot': 0}
+bankdebt = {'dragonslayer965': 0, 'irlightbrite': 0, 'akumaluffy':0, 'windaskk':0, 'elesevd':0, 'ericirq.yeung':0, 'live:biscuitsbot': 0, 'markpjin':0, 'daskbot':0}
+
+chatlog = []
+chatlogsenders = []
 
 def commands(Message, Status):
 
     if Status == 'SENT' or (Status == 'RECEIVED'):
-        file = open("chatlog.txt", "w")
         msg = Message.Body.lower()
         body = Message.Body
-        file.write(body + "\n")
         MSH = Message.Sender.Handle
         bottlecaps[MSH] += 5
-        #bannedlist = []        
+        #bannedlist = []    
 
-        if body == "#beep":
-            cmd_test(Message)
+        if (body.startswith("#") or body.startswith("%") or MSH == "daskbot" or MSH == "live:biscuitsbot"):
+            pass         
+        else:
+            chatlog.append(str(body))
+            chatlogsenders.append(str(MSH)) 
+
+        if body.startswith("#chatlog"):         
+            splitMessage = body.strip().split(" ")
+            history = int(splitMessage[1])
+           
+            if history < len(chatlog):
+                chatlogcut = chatlog[history-1:]
+                chatlogsenders1 = chatlogsenders[history-1:]
+                Message.Chat.SendMessage("Going back to the last " + str(history) + " messages.")
+                
+                for i in range(len(chatlogcut)):
+                    Message.Chat.SendMessage(chatlogsenders1[i] + ":" + chatlogcut[i])
+           
+            elif history > 20:
+                Message.Chat.SendMessage("Buy biscuitsbot premium to get older history!")
+            
+            else:
+                Message.Chat.SendMessage("Your number exceeds the number of messages in the chatlog. Try a smaller one!")
+
+        elif body.startswith("#clearchatlog") and (MSH == "ericirq.yeung"):
+            del chatlog[:]
+            del chatlogsenders[:]
+            Message.Chat.SendMessage("Messages deleted.")
 
         elif body == "#help":
             cmd_help(Message)
@@ -182,7 +209,7 @@ def commands(Message, Status):
             Message.Chat.SendMessage(bankdebt)
             #print health; print armour; print weapon
 
-        elif body.startswith("#give") and (MSH == "ericirq.yeung" or MSH == "irlightbrite"):
+        elif body.startswith("#give") and (MSH == "ericirq.yeung"):
             splitMessage = body.strip().split(" ")
             person = splitMessage[1]
             amount = splitMessage[2]
