@@ -21,6 +21,7 @@ class SkypeBot():
         self.skypeClient = Skype4Py.Skype()
         self.skypeClient.OnMessageStatus = self.command_callback
         self.skypeClient.Attach()
+        self.user_handle = self.skypeClient.User().Handle
         self.power = True
         self.live_streamers = []
 
@@ -181,7 +182,8 @@ class SkypeBot():
 
     def log_message(self, Message):
         # TODO: Logging
-        put_log_message(Message)
+        if Message.Sender.Handle != self.user_handle:
+            put_log_message(Message)
 
     def handle_command(self, chat, command, message):
         command_handler = self.commands.get(command)
