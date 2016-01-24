@@ -1,24 +1,28 @@
 import httplib2, json
 import boto3
+from boto3.dynamodb.conditions import Key, Attr
 
 dynamodb = boto3.resource('dynamodb')
 table = dynamodb.Table('log_messages')
 
-def get_log_messages(num):
+def get_log_messages(key, num):
     try:
-        result = sorted(list(table.scan()['Items']), key=lambda x: x['date'])
         limit = 10
         try:
             limit = int(num)
         except:
             pass
-        return True, result[-min(10, limit, len(result)):]
+        result = table.query(KeyConditionExpression=Key('chat').eq(key),
+                             ScanIndexForward=False,
+                             Limit=min(10, limit))['Items']
+        return True, list(reversed(result))
     except:
         return False, "Error"
 
-def put_log_message(Message):
+def put_log_message(Message):    
     try:
         data = {
+            'chat': Message.Chat.Name,
             'handler': Message.Sender.Handle,
             'message': Message.Body.encode('utf-8'),
             'date': int(Message.Timestamp)

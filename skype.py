@@ -78,7 +78,7 @@ class SkypeBot():
             self.send_message(chat, help_message)
 
     def handle_history(self, chat, content):
-        result, response = get_log_messages(content)
+        result, response = get_log_messages(chat.Name, content)
         if result:
             self.send_message(chat, " >> [History] Retreived {} messages".format(len(response)))
             for message in response:
