@@ -55,19 +55,16 @@ def commands(Message, Status):
             splitMessage = body.strip().split(" ")
             history = int(splitMessage[1])
            
-            if history < len(chatlog):
-                chatlogcut = chatlog[history-1:]
-                chatlogsenders1 = chatlogsenders[history-1:]
-                Message.Chat.SendMessage("Going back to the last " + str(history) + " messages.")
+            if (history < len(chatlog) and history <= 20):
+                chatlogcut = chatlog[-history:]
+                chatlogsenders1 = chatlogsenders[-history:]
+                Message.Chat.SendMessage("Going back to the last " + str(history) + " message(s).")
                 
                 for i in range(len(chatlogcut)):
                     Message.Chat.SendMessage(chatlogsenders1[i] + ":" + chatlogcut[i])
            
-            elif history > 20:
-                Message.Chat.SendMessage("Buy biscuitsbot premium to get older history!")
-            
             else:
-                Message.Chat.SendMessage("Your number exceeds the number of messages in the chatlog. Try a smaller one!")
+                Message.Chat.SendMessage("Buy biscuitsbot premium to get older history!")
 
         elif body.startswith("#clearchatlog") and (MSH == "ericirq.yeung"):
             del chatlog[:]
