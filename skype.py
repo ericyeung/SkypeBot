@@ -14,6 +14,7 @@ from modules.motd import get_message, update_message
 from modules.twitch import get_streamers, add_streamer, remove_streamer, get_all_live
 from modules.task_thread import TaskThread
 from modules.weather import get_temperature
+from modules.history import get_log_messages, put_log_message
 
 class SkypeBot():
     def __init__(self, periodic):
@@ -29,6 +30,7 @@ class SkypeBot():
             'code': self.handle_code,
             'csgo': self.handle_csgo,
             'help': self.handle_help,
+            'history': self.handle_history,
             'hscard': self.handle_hscard,
             'kawkaw': self.handle_kawkaw,
             'live': self.handle_live,
@@ -73,6 +75,16 @@ class SkypeBot():
     def handle_help(self, chat, content):
         for help_message in get_help_messages():
             self.send_message(chat, help_message)
+
+    def handle_history(self, chat, content):
+        result, response = get_log_messages(content)
+        if result:
+            self.send_message(chat, " >> [History] Retreived {} messages".format(len(response)))
+            for message in response:
+                date = datetime.fromtimestamp(message['date'])
+                self.send_message(chat, " >>> [{}] {}: {}".format(date, message['handler'], message['message'].encode('utf-8')))
+        else:
+            self.send_message(chat, " >>> [History] Error...")
 
     def handle_hscard(self, chat, content):
         description = get_card_description(content)
@@ -167,6 +179,10 @@ class SkypeBot():
         while True:
             time.sleep(0.2)
 
+    def log_message(self, Message):
+        # TODO: Logging
+        put_log_message(Message)
+
     def handle_command(self, chat, command, message):
         command_handler = self.commands.get(command)
         if not command_handler:
@@ -179,6 +195,7 @@ class SkypeBot():
         if (chat in set(self.skypeClient.BookmarkedChats)) and (Status == "SENT" or Status == "RECEIVED"):
             message = Message.Body
             tokenized = message.split()
+            self.log_message(Message)
             if tokenized[0].startswith("%"):
                 command = message.split()[0][1:].lower()
                 self.handle_command(chat, command, message[len(tokenized[0]):])

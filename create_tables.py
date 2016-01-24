@@ -45,3 +45,25 @@ table = dynamodb.create_table(
 )
 
 print("Table status:", table.table_status)
+
+table = dynamodb.create_table(
+    TableName='log_messages',
+    KeySchema=[
+        {
+            'AttributeName': 'date',
+            'KeyType': 'HASH'  #Partition key
+        },
+    ],
+    AttributeDefinitions=[
+        {
+            'AttributeName': 'date',
+            'AttributeType': 'N'
+        }
+    ],
+    ProvisionedThroughput={
+        'ReadCapacityUnits': 5,
+        'WriteCapacityUnits': 5
+    }
+)
+
+print("Table status:", table.table_status)
