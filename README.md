@@ -5,6 +5,11 @@ Get 32-bit python and type ```pip install Skype4Py PyTeaser``` into your command
 Clone this repository ```git clone https://github.com/ericyeung/SkypeBot.git```. 
 Open Skype and then bookmark the chat you want your bot to operate in. Now run the script ```python skype.py```. Have fun! 
 
+TODO: List
+==============
+Put stimpack count in #stats
+Increase number of weapons, fairly distribute the prices. 
+
 Usage 
 ==============
 
@@ -35,3 +40,7 @@ Get in-chat currency every time you type! Get bottlecaps to go exploring the was
 #buy to buy stuff
 #leaderboard to check the bottlecap rankings
 ```
+
+Chat logs
+==============
+Tired of seeing removed or edited messages? No problem! Type !chatlog <# of messages retrieved> to get the messages removed/edited. 
