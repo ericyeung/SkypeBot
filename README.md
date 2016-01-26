@@ -7,8 +7,8 @@ Open Skype and then bookmark the chat you want your bot to operate in. Now run t
 
 TODO: List
 ==============
-Put stimpack count in #stats
-Increase number of weapons, fairly distribute the prices. 
+- Put stimpack count in #stats. 
+- Increase number of weapons, fairly distribute the prices. 
 
 Usage 
 ==============
