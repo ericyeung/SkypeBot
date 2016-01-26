@@ -7,13 +7,13 @@ Open Skype and then bookmark the chat you want your bot to operate in. Now run t
 
 TODO: List
 ==============
-- Put stimpack count in #stats. 
+- Put stimpack count in ```#stats```. 
 - Increase number of weapons, fairly distribute the prices. 
 
 Usage 
 ==============
 
-An example of the #tldr command: 
+An example of the ```#tldr``` command: 
 ```
 #tldr http://news.utoronto.ca/satoru-iwata-why-generation-mourning-loss-nintendos-ceo
 >> Summarizing your article...
@@ -43,4 +43,4 @@ Get in-chat currency every time you type! Get bottlecaps to go exploring the was
 
 Chat logs
 ==============
-Tired of seeing removed or edited messages? No problem! Type !chatlog <# of messages retrieved> to get the messages removed/edited. 
+Tired of seeing removed or edited messages? No problem! Type ```!chatlog <# of messages retrieved>``` to get the messages removed/edited. 
