@@ -7,10 +7,11 @@ Open Skype and then bookmark the chat you want your bot to operate in. Now run t
 
 TODO: List
 ==============
-- Put stimpack count in ```#stats```. 
+- Put stimpack count and bottlecaps in ```#stats```. 
 - Increase number of weapons, fairly distribute the prices. 
 - Make it so that the damage taken scales inversely proportional to the roll (i.e., rolling a 1 makes you take more damage then rolling a 69.)
 - Show rolled as roll + weapon attack, maybe factor weapon attack into loot quality? 
+- Fix loan stuff
 
 Usage 
 ==============
