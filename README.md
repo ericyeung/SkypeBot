@@ -13,6 +13,7 @@ TODO: List
 - Show rolled as roll + weapon attack, maybe factor weapon attack into loot quality? 
 - Fix loan stuff
 - Make read/write to store stuff. 
+- Clarify debug command. 
 
 Usage 
 ==============
