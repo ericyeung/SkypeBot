@@ -12,6 +12,7 @@ TODO: List
 - Make it so that the damage taken scales inversely proportional to the roll (i.e., rolling a 1 makes you take more damage then rolling a 69.)
 - Show rolled as roll + weapon attack, maybe factor weapon attack into loot quality? 
 - Fix loan stuff
+- Make read/write to store stuff. 
 
 Usage 
 ==============
