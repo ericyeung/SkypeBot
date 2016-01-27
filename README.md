@@ -15,6 +15,7 @@ TODO: List
 - Make read/write to store stuff. 
 - Clarify debug command. 
 - Patch notes? 
+- Change exploring cost to "energy".
 
 Usage 
 ==============
