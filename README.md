@@ -16,6 +16,7 @@ TODO: List
 - Clarify debug command. 
 - Patch notes? 
 - Change exploring cost to "energy".
+- 20 Stimpack limit.
 
 Usage 
 ==============
