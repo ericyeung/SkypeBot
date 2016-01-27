@@ -14,6 +14,7 @@ TODO: List
 - Fix loan stuff
 - Make read/write to store stuff. 
 - Clarify debug command. 
+- Patch notes? 
 
 Usage 
 ==============
