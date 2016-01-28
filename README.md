@@ -12,7 +12,6 @@ TODO: List
 - [x] Make it so that the damage taken scales inversely proportional to the roll (i.e., rolling a 1 makes you take more damage then rolling a 69.)
 - [ ] Make exploring more skill-based.
 - [ ] Raids, bosses, endgame content
-- Show rolled as roll + weapon attack, maybe factor weapon attack into loot quality? 
 - [x] Fix loan stuff
 - [ ] Make read/write to store stuff. 
 - [x] Clarify debug command. 
