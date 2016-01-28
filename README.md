@@ -7,16 +7,20 @@ Open Skype and then bookmark the chat you want your bot to operate in. Now run t
 
 TODO: List
 ==============
-- Put stimpack count and bottlecaps in ```#stats```. 
-- Increase number of weapons, fairly distribute the prices. 
-- Make it so that the damage taken scales inversely proportional to the roll (i.e., rolling a 1 makes you take more damage then rolling a 69.)
+- [x] Put stimpack count and bottlecaps in ```#stats```. 
+- [x] Increase number of weapons, fairly distribute the prices. 
+- [x] Make it so that the damage taken scales inversely proportional to the roll (i.e., rolling a 1 makes you take more damage then rolling a 69.)
+- [ ] Make exploring more skill-based.
+- [ ] Raids, bosses, endgame content
 - Show rolled as roll + weapon attack, maybe factor weapon attack into loot quality? 
-- Fix loan stuff
-- Make read/write to store stuff. 
-- Clarify debug command. 
-- Patch notes? 
-- Change exploring cost to "energy".
-- 20 Stimpack limit.
+- [x] Fix loan stuff
+- [ ] Make read/write to store stuff. 
+- [x] Clarify debug command. 
+- [x] Change exploring cost to "energy".
+- [x] 10 Stimpack limit.
+- [x] You now lose a flat amount of bottlecaps when you are in the negatives. 
+- [ ] Implement PVP and trading system. 
+- [x] Removed the Iron Bank of Braavos. 
 
 Usage 
 ==============
