@@ -1,7 +1,6 @@
 #!/usr/bin/python
 import Skype4Py
 import threading
-import numpy as np
 import os, time, httplib2, json
 import random as rand
 from tldr import cmd_tldr
@@ -25,8 +24,8 @@ shop = {'Stimpack': 500,
 	'Hunting_Rifle':8000,
 	'Plasma_Rifle':13000,
 	'MIRV':20000, 
-	'Black_People_Pesticide': 50000}
-	'Vault101': 3000 , 
+	'Black_People_Pesticide': 50000,
+	'Vault101': 3000, 
 	'Leather': 6000, 
 	'Metal': 9000, 
 	'Combat': 12000, 
@@ -86,9 +85,9 @@ weapon = {'dragonslayer965': 0,
 	'daskbot':0, 
 	'karikenji':0}
 
-stimpack = {{'dragonslayer965': 1, 
+stimpack = {'dragonslayer965': 1, 
 	'irlightbrite': 1, 
-	'akumaluffy': , 
+	'akumaluffy': 1, 
 	'windaskk': 1, 
 	'elesevd': 1, 
 	'ericirq.yeung': 1, 
@@ -201,8 +200,8 @@ def commands(Message, Status):
             Message.Chat.SendMessage("EMOJI DETECTED")
         
         elif body.startswith("#explore"):
-            if energy >= 5:
-	            energy[MSH] -= 5  
+            if energy[MSH] >= 4:
+	            energy[MSH] -= 4  
 	            Message.Chat.SendMessage(MSH + " started exploring (-5 energy)!")
 	            tempz = rand.randrange(1, 101)
 	            Message.Chat.SendMessage(MSH + " rolled a " + str(tempz) + "+" + str(weapon[MSH]) + ".")
@@ -213,22 +212,22 @@ def commands(Message, Status):
 	                Message.Chat.SendMessage(MSH + " got injured! Lost " + str(healthlost) + " health.")
 	            
 	                if health[MSH] <= 0:
+	                    health[MSH] = 50
 	                    
-	                    if bottlecaps[MSH] > 0:
-		                    bottlecaps[MSH] /= 2  
-		                    #Message.Chat.SendMessage(MSH + " has died! You lost half of your bottlecaps.") 
-		                    Message.Chat.SendMessage(MSH + random.choice(death_phrases) + "\nYou lost half of your bottlecaps.") 
-		                else:
-		                	bottlecaps[MSH] -= 50
-
-		                health[MSH] = 50
+                            if bottlecaps[MSH] > 0:
+		                bottlecaps[MSH] /= 2  
+		                #Message.Chat.SendMessage(MSH + " has died! You lost half of your bottlecaps.") 
+		                Message.Chat.SendMessage(MSH + " " + rand.choice(death_phrases) + "\nYou lost half of your bottlecaps.") 
+		            else:
+		                bottlecaps[MSH] -= 50
+                                Message.Chat.SendMessage(MSH + " " + rand.choice(death_phrases) + "\nYou lost 50 bottlecaps.") 
 
 	            else:
 	                bottlecaps[MSH] += tempz*7
 	                Message.Chat.SendMessage("Found " + str(tempz*7) + " bottlecaps! (always lucky)")            
 
-	        else:
-				Message.Chat.SendMessage("You're too tired! Have some rest.")
+	    else:
+                Message.Chat.SendMessage("You're too tired! Have some rest.")
 
         elif body.startswith("#shop") or body.startswith("#store"):
             Message.Chat.SendMessage("Stimpack: 500 \nTerrible_Shotgun: 5000 \nHunting_Rifle: 50000 \nPlasma_Rifle: 50000 \nMIRV: 50000 \nBlack_People_Pesticide: 500000 \nVault101: 3000 \nLeather: 6000 \nMetal: 9000 \nCombat: 12000 \nPower: 15000")
@@ -239,6 +238,7 @@ def commands(Message, Status):
             Message.Chat.SendMessage("You have " + str(weapon[MSH]) + " attack.")    
             Message.Chat.SendMessage("You have " + str(bottlecaps[MSH]) + " bottlecaps.")    
             Message.Chat.SendMessage("You have " + str(stimpack[MSH]) + " stimpacks.")    
+            Message.Chat.SendMessage("You have " + str(energy[MSH]) + " energy.")    
 
         elif body.startswith("#buy"):
             splitMessage = body.strip().split(" ")
@@ -253,8 +253,8 @@ def commands(Message, Status):
                     if stimpack[MSH] <= 10:
                     	stimpack[MSH] += 1
                     	Message.Chat.SendMessage("You now have a " + item + "!") 
-    				else:
-    					Message.Chat.SendMessage("You can only have 10 stimpacks at a time.") 	
+    	            else:
+    			Message.Chat.SendMessage("You can only have 10 stimpacks at a time.") 	
 
                 elif (item == "Terrible_Shotgun"):
                     weapon[MSH] = 3
@@ -322,7 +322,7 @@ def commands(Message, Status):
             Message.Chat.SendMessage(weapon)
             Message.Chat.SendMessage("BANKDEBT")
             Message.Chat.SendMessage(bankdebt)
-			Message.Chat.SendMessage("ENERGY")
+	    Message.Chat.SendMessage("ENERGY")
             Message.Chat.SendMessage(energy)
 
         elif body.startswith("#give") and (MSH == "ericirq.yeung"):
