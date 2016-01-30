@@ -128,11 +128,11 @@ def commands(Message, Status):
         body = Message.Body
         MSH = Message.Sender.Handle
         
-        if energy[MSH] <= 20:
-        	energy[MSH] += 1
+        if energy[MSH] <= 19:
+            energy[MSH] += 1
 
        	else:
-       		pass
+       	    pass
 
         if (body.startswith("#") or body.startswith("%") or MSH == "daskbot" or MSH == "live:biscuitsbot"):
             pass       
