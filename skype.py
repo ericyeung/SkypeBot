@@ -42,18 +42,82 @@ death_phrases = ["got killed by Secret Paladin.",
 	"took an arrow to the knee xD xD xD MEMES xD xD xD.", 
 	"committed sudoku"]
 
-bottlecaps_temp = open('bottlecaps.json'); bottlecaps = bottlecaps_temp.read()#; bottlecaps_temp.close()
-health_temp = open('health.json'); health = health_temp.read()#; health_temp.close()
-stimpack_temp = open('stimpack.json'); stimpack = stimpack_temp.read()#; stimpack_temp.close()
-weapon_temp = open('weapon.json'); weapon = weapon_temp.read()#; weapon_temp.close()
-armour_temp = open('armour.json'); armour = armour_temp.read()#; armour_temp.close()
-energy_temp = open('energy.json'); energy = energy_temp.read()#; energy_temp.close()
+bottlecaps = {'dragonslayer965': 1000, 
+	'irlightbrite': 1000, 
+	'akumaluffy':1500, 
+	'windaskk':1000, 
+	'elesevd':1000, 
+	'ericirq.yeung':1000, 
+	'live:biscuitsbot':0, 
+	'markpjin':1000, 
+	'daskbot':0, 
+	'karikenji':1000}
 
+health = {'dragonslayer965': 100, 
+	'irlightbrite': 100, 
+	'akumaluffy':100, 
+	'windaskk':100, 
+	'elesevd':100, 
+	'ericirq.yeung':100, 
+	'live:biscuitsbot': 100, 
+	'markpjin':100, 
+	'daskbot':100, 
+	'karikenji':1000}
 
-bottlecaps_file = open('bottlecaps.json')
-bottlecaps_str = bottlecaps_file.read()
-bottlecaps = json.loads(bottlecaps_str)[0]
+armour = {'dragonslayer965': 0, 
+	'irlightbrite': 0, 
+	'akumaluffy': 0, 
+	'windaskk': 0, 
+	'elesevd': 0, 
+	'ericirq.yeung': 0, 
+	'live:biscuitsbot': 0, 
+	'markpjin':0, 
+	'daskbot':0, 
+	'karikenji':0}
 
+weapon = {'dragonslayer965': 0, 
+	'irlightbrite': 0, 
+	'akumaluffy': 0, 
+	'windaskk': 0, 
+	'elesevd': 0, 
+	'ericirq.yeung': 0, 
+	'live:biscuitsbot': 0, 
+	'markpjin':0, 
+	'daskbot':0, 
+	'karikenji':0}
+
+stimpack = {{'dragonslayer965': 1, 
+	'irlightbrite': 1, 
+	'akumaluffy': , 
+	'windaskk': 1, 
+	'elesevd': 1, 
+	'ericirq.yeung': 1, 
+	'live:biscuitsbot': 1, 
+	'markpjin':1, 
+	'daskbot':1, 
+	'karikenji':1}
+
+bankdebt = {'dragonslayer965': 0, 
+	'irlightbrite': 0, 
+	'akumaluffy': 0, 
+	'windaskk': 0, 
+	'elesevd': 0, 
+	'ericirq.yeung': 0, 
+	'live:biscuitsbot': 0, 
+	'markpjin':0, 
+	'daskbot':0, 
+	'karikenji':0}
+
+energy = {'dragonslayer965': 0, 
+	'irlightbrite': 0, 
+	'akumaluffy': 0, 
+	'windaskk': 0, 
+	'elesevd': 0, 
+	'ericirq.yeung': 0, 
+	'live:biscuitsbot': 0, 
+	'markpjin':0, 
+	'daskbot':0, 
+	'karikenji':0}
 
 chatlog = []
 chatlogsenders = []
