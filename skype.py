@@ -14,7 +14,7 @@ from modules.motd import get_message, update_message
 from modules.twitch import get_streamers, add_streamer, remove_streamer, get_all_live
 from modules.task_thread import TaskThread
 from modules.weather import get_temperature
-from modules.history import get_log_messages, put_log_message
+from modules.history import get_log_messages, put_log_message, query_log_messages_frequency
 
 class SkypeBot():
     def __init__(self, periodic):
@@ -32,6 +32,7 @@ class SkypeBot():
             'csgo': self.handle_csgo,
             'help': self.handle_help,
             'history': self.handle_history,
+            'frequency': self.handle_frequency,
             'hscard': self.handle_hscard,
             'kawkaw': self.handle_kawkaw,
             'live': self.handle_live,
@@ -72,6 +73,18 @@ class SkypeBot():
     def handle_csgo(self, chat, content):
         for i in range(4):
             self.send_message(chat, "GOGOGOGOGOGGO")
+
+    def handle_frequency(self, chat, content):
+        result, response = query_log_messages_frequency(chat.Name, content)
+        #result[-5:]
+        returned_results = response[-5:] if len(response) > 4 else response
+        if result:
+            self.send_message(chat, " >> [History] Query returned {} messages, Showing {}".format(len(response), len(returned_results) ))
+            for message in returned_results:
+                date = datetime.fromtimestamp(message['date'])
+                self.send_message(chat, " >>> [{}] {}: {}".format(date, message['handler'], message['message'].encode('utf-8')))
+        else:
+            self.send_message(chat, " >>> [History] Error...")
 
     def handle_help(self, chat, content):
         for help_message in get_help_messages():
