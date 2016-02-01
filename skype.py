@@ -134,7 +134,7 @@ def commands(Message, Status):
             splitMessage = body.strip().split(" ")
             history = int(splitMessage[1])
            
-            if (history < len(chatlog) and history <= 20):
+            if (history < len(chatlog) and 0 < history <= 20):
                 chatlogcut = chatlog[-history:]
                 chatlogsenders1 = chatlogsenders[-history:]
                 Message.Chat.SendMessage("Going back to the last " + str(history) + " message(s).")
