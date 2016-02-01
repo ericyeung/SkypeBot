@@ -11,7 +11,8 @@ def get_log_messages(chat, num):
         try:
             limit = int(num)
         except:
-            pass
+            if num.strip() != '':
+                return False, "Error"
         result = table.query(KeyConditionExpression=Key('chat').eq(chat),
                              ScanIndexForward=False,
                              Limit=min(10, limit))['Items']
