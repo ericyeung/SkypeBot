@@ -61,7 +61,7 @@ health = {'dragonslayer965': 100,
 	'live:biscuitsbot': 100, 
 	'markpjin':100, 
 	'daskbot':100, 
-	'karikenji':1000}
+	'karikenji':100}
 
 armour = {'dragonslayer965': 0, 
 	'irlightbrite': 0, 
@@ -95,17 +95,6 @@ stimpack = {'dragonslayer965': 1,
 	'markpjin':1, 
 	'daskbot':1, 
 	'karikenji':1}
-
-bankdebt = {'dragonslayer965': 0, 
-	'irlightbrite': 0, 
-	'akumaluffy': 0, 
-	'windaskk': 0, 
-	'elesevd': 0, 
-	'ericirq.yeung': 0, 
-	'live:biscuitsbot': 0, 
-	'markpjin':0, 
-	'daskbot':0, 
-	'karikenji':0}
 
 energy = {'dragonslayer965': 0, 
 	'irlightbrite': 0, 
@@ -145,7 +134,7 @@ def commands(Message, Status):
             splitMessage = body.strip().split(" ")
             history = int(splitMessage[1])
            
-            if (history < len(chatlog) and history <= 30):
+            if (history < len(chatlog) and history <= 20):
                 chatlogcut = chatlog[-history:]
                 chatlogsenders1 = chatlogsenders[-history:]
                 Message.Chat.SendMessage("Going back to the last " + str(history) + " message(s).")
@@ -202,7 +191,7 @@ def commands(Message, Status):
         elif body.startswith("#explore"):
             if energy[MSH] >= 4:
 	            energy[MSH] -= 4  
-	            Message.Chat.SendMessage(MSH + " started exploring (-5 energy)!")
+	            Message.Chat.SendMessage(MSH + " started exploring (-4 energy)!")
 	            tempz = rand.randrange(1, 101)
 	            Message.Chat.SendMessage(MSH + " rolled a " + str(tempz) + "+" + str(weapon[MSH]) + ".")
 	            healthlost = (100-tempz)*(20 - armour[MSH])/20
@@ -230,7 +219,7 @@ def commands(Message, Status):
                 Message.Chat.SendMessage("You're too tired! Have some rest.")
 
         elif body.startswith("#shop") or body.startswith("#store"):
-            Message.Chat.SendMessage("Stimpack: 500 \nTerrible_Shotgun: 5000 \nHunting_Rifle: 50000 \nPlasma_Rifle: 50000 \nMIRV: 50000 \nBlack_People_Pesticide: 500000 \nVault101: 3000 \nLeather: 6000 \nMetal: 9000 \nCombat: 12000 \nPower: 15000")
+            Message.Chat.SendMessage("Stimpack: 500 \nTerrible_Shotgun: 5000 \nHunting_Rifle: 8000 \nPlasma_Rifle: 13000 \nMIRV: 20000 \nBlack_People_Pesticide: 50000 \nVault101: 3000 \nLeather: 6000 \nMetal: 9000 \nCombat: 12000 \nPower: 15000")
            
         elif body.startswith("#stats"):
             Message.Chat.SendMessage("You have " + str(health[MSH]) + " health.")    
@@ -243,7 +232,7 @@ def commands(Message, Status):
         elif body.startswith("#buy"):
             splitMessage = body.strip().split(" ")
             item = splitMessage[1]
-            if (bottlecaps[MSH] - shop[item]) <= 0:
+            if (bottlecaps[MSH] - shop[item]) < 0:
                 Message.Chat.SendMessage("You don't have enough bottlecaps!")
 
             else:  
