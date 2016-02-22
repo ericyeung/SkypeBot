@@ -20,6 +20,7 @@ TODO: List
 - [x] You now lose a flat amount of bottlecaps when you are in the negatives. 
 - [ ] Implement PVP and trading system. 
 - [x] Removed the Iron Bank of Braavos. 
+- [ ] Give every message 5 bottlecaps again?
 
 Usage 
 ==============
