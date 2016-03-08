@@ -18,7 +18,7 @@ def get_log_messages(chat, num):
         result = table.query(KeyConditionExpression=Key('chat').eq(chat),
                              ScanIndexForward=False,
                              Limit=min(10, limit))['Items']
-        return True, list(reversed(filter_commands(result)))
+        return True, list(reversed(result))
     except:
         return False, "Error"
 
