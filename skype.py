@@ -75,11 +75,11 @@ class SkypeBot():
             self.send_message(chat, "GOGOGOGOGOGGO")
 
     def handle_frequency(self, chat, content):
-        result, response = query_log_messages_frequency(chat.Name, content)
-        #result[-5:]
+        result, response, last_key = query_log_messages_frequency(chat.Name, content)
+        start = datetime.fromtimestamp(last_key['date']) if last_key else "the beginning"
         returned_results = response[-5:] if len(response) > 4 else response
         if result:
-            self.send_message(chat, " >> [History] Query returned {} messages, Showing {}".format(len(response), len(returned_results) ))
+            self.send_message(chat, " >> [History] Query returned {} messages from {}, Showing {}".format(len(response), start, len(returned_results) ))
             for message in returned_results:
                 date = datetime.fromtimestamp(message['date'])
                 self.send_message(chat, " >>> [{}] {}: {}".format(date, message['handler'], message['message'].encode('utf-8')))

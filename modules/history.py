@@ -1,6 +1,5 @@
-import httplib2, json
 import boto3
-from boto3.dynamodb.conditions import Key, Attr
+from boto3.dynamodb.conditions import Key
 
 dynamodb = boto3.resource('dynamodb')
 table = dynamodb.Table('log_messages')
@@ -28,15 +27,20 @@ def put_log_message(Message):
             'message': Message.Body.encode('utf-8'),
             'date': int(Message.Timestamp)
         }
-        result = table.put_item(Item=data)
+        table.put_item(Item=data)
         return True, "Success", Message
     except:
         print("ERROR putting message {}".format(Message.Body.encode('utf-8')))
         return False, "Internal error.", ""
 
 def query_log_messages_frequency(chat, query):
+
     try:
-        result = table.scan(ScanFilter={'message': { 'AttributeValueList': [ query ], 'ComparisonOperator': 'CONTAINS' }})['Items']
-        return True, result
+        q_result = table.query(ScanIndexForward=False,
+                             KeyConditions={'chat': { 'AttributeValueList': [ chat ], 'ComparisonOperator': 'EQ' }},
+                             QueryFilter={'message': { 'AttributeValueList': [ query ], 'ComparisonOperator': 'CONTAINS' }})
+        result = q_result['Items']
+        last_key = q_result.get('LastEvaluatedKey', None)
+        return True, list(reversed(result)), last_key
     except:
-        return False, "Error"
+        return False, "Error", None
