@@ -17,8 +17,10 @@ def add_streamer(streamer):
         content_object = content.decode('utf-8')
         data = json.loads(content_object)
         if "error" not in data:
-            del data['bio']
-            del data['logo']
+            if 'bio' in data:
+                del data['bio']
+            if 'logo' in data:
+                del data['logo']
             data['stream'] = STREAM_ENDPOINT + data['name']
             table.put_item(Item=data)
             return True, "Success", data['display_name']
