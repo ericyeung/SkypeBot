@@ -22,18 +22,20 @@ botService.on('contactAdded', (bot, data) => {
 
 botService.on('personalMessage', (bot, data) => {
     client.invoke("command_callback", data.content, function(error, res, more) {
-      console.log(res);
       if (res) {
-        bot.reply(res, true);
+        for(i = 0; i < res.length; i++) {
+          bot.reply(res[i], true);
+        }
       }
     });
 });
 
 botService.on('groupMessage', (bot, data) => {
     client.invoke("command_callback", data.content,  function(error, res, more) {
-      console.log(res);
       if (res) {
-        bot.reply(res, true);
+        for(i = 0; i < res.length; i++) {
+          bot.reply(res[i], true);
+        }
       }
     });
 });

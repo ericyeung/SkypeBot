@@ -2,7 +2,6 @@
 # -*- coding: utf-8 -*-
 
 import argparse
-import Skype4Py
 import time
 import zerorpc
 
@@ -74,8 +73,10 @@ class SkypeBot():
         return self.send_message(chat, " >> It's time to CODE.")
 
     def handle_csgo(self, chat, content):
+        messages = []
         for i in range(4):
-            return self.send_message(chat, "GOGOGOGOGOGGO")
+            messages.append("GOGOGOGOGOGGO")
+        return self.send_message(chat, messages)
 
     def handle_frequency(self, chat, content):
         result, response, last_key = query_log_messages_frequency(chat.Name, content)
@@ -83,15 +84,16 @@ class SkypeBot():
         returned_results = response[-5:] if len(response) > 4 else response
         if result:
             return self.send_message(chat, " >> [History] Query returned {} messages from {}, Showing {}".format(len(response), start, len(returned_results) ))
+            messages = []
             for message in returned_results:
                 date = datetime.fromtimestamp(message['date'])
-                return self.send_message(chat, " >>> [{}] {}: {}".format(date, message['handler'], message['message'].encode('utf-8')))
+                messages.append(" >>> [{}] {}: {}".format(date, message['handler'], message['message'].encode('utf-8')))
+            return self.send_message(chat, messages)
         else:
             return self.send_message(chat, " >>> [History] Error...")
 
     def handle_help(self, chat, content):
-        for help_message in get_help_messages():
-            return self.send_message(chat, help_message)
+        return self.send_message(chat, get_help_messages())
 
     def handle_history(self, chat, content):
         result, response = get_log_messages(chat.Name, content)
@@ -111,17 +113,21 @@ class SkypeBot():
             return self.send_message(chat, " >> [HSCard] Cannot be found!  Please try again!")
 
     def handle_kawkaw(self, chat, content):
+        messages = []
         for i in range(4):
-            return self.send_message(chat, "KAW AWH KAW AWH KAW AWH")
+            messages.append("KAW AWH KAW AWH KAW AWH")
+        return self.send_message(chat, messages)
 
     def handle_live(self, chat, content):
         all_live = get_all_live()
         if not all_live:
             return self.send_message(chat, "No streamers are up! D:")
         else:
+            messages = []
             for streamer in all_live:
-                return self.send_message(chat, "{}'s stream is up!  http://www.twitch.tv/{}"
-                                        .format(streamer['display_name'], streamer['name']))
+                messages.append("{}'s stream is up!  http://www.twitch.tv/{}"
+                                .format(streamer['display_name'], streamer['name']))
+            return messages
 
     def handle_message(self, chat, content):
         if content:
@@ -173,11 +179,16 @@ class SkypeBot():
             return self.send_message(chat, " >> Invalid format.  %weather [city],[country]")
 
     def handle_wubwub(self, chat, content):
+        messages = []
         for i in range(4):
-            return self.send_message(chat, "WUBWUBWUBWUB")
+            messages.append("WUBWUBWUBWUB")
+        return self.send_message(chat, messages)
 
     def send_message(self, chat, msg):
-        return msg;
+        if type(msg) is list:
+            return msg
+        else: 
+            return [msg];
         #if not args.test:
         #    chat.SendMessage(msg)
         #else:

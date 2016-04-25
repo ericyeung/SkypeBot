@@ -13,7 +13,7 @@ table = dynamodb.Table('log_messages')
 
 # TODO: Make this more generic
 start_month = 1
-end_month = 3
+end_month = 4
 for month in range(start_month, end_month):
     # Local Time GMT-5
     start_time = datetime.datetime(2016, month, 01, 0, 0)
