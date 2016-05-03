@@ -44,6 +44,7 @@ class SkypeBot():
             'streamers': self.handle_streamers,
             'time': self.handle_time,
             'trigger': self.handle_trigger,
+            'watchtogether': self.handle_watch_together,
             'weather': self.handle_weather,
             'wubwub': self.handle_wubwub
         }
@@ -127,7 +128,7 @@ class SkypeBot():
             for streamer in all_live:
                 messages.append("{}'s stream is up!  http://www.twitch.tv/{}"
                                 .format(streamer['display_name'], streamer['name']))
-            return messages
+            return self.send_message(chat, messages)
 
     def handle_message(self, chat, content):
         if content:
@@ -170,6 +171,9 @@ class SkypeBot():
 
     def handle_trigger(self, chat, content):
         return self.send_message(chat, " >> [Trigger] " + content)
+
+    def handle_watch_together(self, chat, content):
+        return self.send_message(chat, " >> https://instasync.com/r/Windask")
 
     def handle_weather(self, chat, content):
         location = content.split(",")
