@@ -84,7 +84,7 @@ channelStreamer.bind('streamer_added', function(data) {
                  'Error on grabbing list of subscribers. [streamer_online]');
 })
 .bind('streamer_online', function(data) {
-  broadcastSkype(` >> ${data.result.display_name} is online! - ${data.result.stream}`,
+  broadcastSkype(` >> ${data.result.display_name} is online! - https://www.twitch.tv/${data.result.name}`,
                  'Error on grabbing list of subscribers. [streamer_online]');
 })
 .bind('streamer_offline', function(data) {
