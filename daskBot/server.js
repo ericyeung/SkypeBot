@@ -1,47 +1,96 @@
-const zerorpc = require("zerorpc");
+'use strict';
+
 const fs = require('fs');
 const restify = require('restify');
 const skype = require('skype-sdk');
-
-var client = new zerorpc.Client();
-client.connect("tcp://127.0.0.1:4242");
+const Pusher = require('pusher-client');
+const CommandProcessor = require('./command-processor');
+const config = require('./config');
+const request = require('superagent');
 
 const botService = new skype.BotService({
     messaging: {
-        botId: '28:7a5eb625-40e0-4bef-a972-f2a11a7c9713',
+        botId: config.BOT_ID,
         serverUrl : "https://apis.skype.com",
         requestTimeout : 15000,
-        appId: '08a671a5-8713-470d-b37c-176e12e3e7b8',
-        appSecret: 'H5sLkjSXDnL0gmGi2amUW10'
+        appId: config.APP_ID,
+        appSecret: config.APP_SECRET,
     }
 });
 
 botService.on('contactAdded', (bot, data) => {
-    bot.reply(`Hello ${data.fromDisplayName}!`, true);
+    bot.reply(`Hello ${data.fromDisplayName}! I am Daskbot 2.0`, true);
 });
 
+function processCommand(data, successHandler, errorHandler) {
+  if (data.content.startsWith('%')) {
+    CommandProcessor.handleCommand(data, successHandler, errorHandler);
+  }
+}
+
+function handleMessage(bot, data) {
+  processCommand(data,
+    function(res) {
+      bot.reply(" >> " + res);
+    },
+    function(err) {
+      bot.reply(" >> " + err);
+    }
+  );
+}
+
 botService.on('personalMessage', (bot, data) => {
-    client.invoke("command_callback", data.content, function(error, res, more) {
-      if (res) {
-        for(i = 0; i < res.length; i++) {
-          bot.reply(res[i], true);
-        }
-      }
-    });
+  handleMessage(bot, data);
 });
 
 botService.on('groupMessage', (bot, data) => {
-    client.invoke("command_callback", data.content,  function(error, res, more) {
-      if (res) {
-        for(i = 0; i < res.length; i++) {
-          bot.reply(res[i], true);
-        }
-      }
-    });
+  handleMessage(bot, data);
 });
 
-var client = new zerorpc.Client();
-client.connect("tcp://127.0.0.1:4242");
+const pusher = new Pusher(config.PUSHER_KEY, {
+  encrypted: true
+});
+
+const channelMotd = pusher.subscribe('motd');
+const channelStreamer = pusher.subscribe('streamer');
+
+function broadcastSkype(successMessage, errorMessage) {
+  request
+  .get(config.API_ENDPOINT + 'skype')
+  .end(function(err, res) {
+    if (!err) {
+      const result = res.body.result;
+      for (let i = 0; i < result.length; i++) {
+        botService.send(result[i], successMessage);
+      }
+    }
+    else {
+      console.log(errorMessage);
+    }
+  });
+}
+
+channelMotd.bind('motd_update', function(data) {
+  broadcastSkype(` >> Today's message is: ${data.result.message}`,
+                 'Error on grabbing list of subscribers. [motd_update]');
+});
+
+channelStreamer.bind('streamer_added', function(data) {
+  broadcastSkype(` >> ${data.result_added.display_name} added to streamer list!`,
+                 'Error on grabbing list of subscribers. [streamer_online]');
+})
+.bind('streamer_removed', function(data) {
+  broadcastSkype(` >> ${data.result_removed.display_name} removed from streamer list!`,
+                 'Error on grabbing list of subscribers. [streamer_online]');
+})
+.bind('streamer_online', function(data) {
+  broadcastSkype(` >> ${data.result.display_name} is online! - ${data.result.stream}`,
+                 'Error on grabbing list of subscribers. [streamer_online]');
+})
+.bind('streamer_offline', function(data) {
+  broadcastSkype(` >> ${data.result.display_name} went offline.`,
+                 'Error on grabbing list of subscribers. [streamer_offline]');
+});
 
 const server = restify.createServer();
 server.use(skype.verifySkypeCert())
