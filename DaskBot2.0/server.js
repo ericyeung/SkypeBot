@@ -1,12 +1,12 @@
 'use strict';
 
-const fs = require('fs');
+const Pusher = require('pusher-client');
+const request = require('superagent');
 const restify = require('restify');
 const skype = require('skype-sdk');
-const Pusher = require('pusher-client');
+
 const CommandProcessor = require('./command-processor');
 const config = require('./config');
-const request = require('superagent');
 
 const botService = new skype.BotService({
     messaging: {
@@ -25,6 +25,22 @@ botService.on('contactAdded', (bot, data) => {
 function processCommand(data, successHandler, errorHandler) {
   if (data.content.startsWith('%')) {
     CommandProcessor.handleCommand(data, successHandler, errorHandler);
+  }
+  else {
+    request
+    .post('https://community-sentiment.p.mashape.com/text/')
+    .set('X-Mashape-Key', config.MASHAPE_KEY)
+    .send( `txt=${data.content}`)
+    .end(function(err, res) {
+      if (!err) {
+        if (parseInt(res.body.result.confidence) >= 75 && res.body.result.sentiment === 'Negative') {
+          successHandler(`Hey ${data.from}, Are you angry/sad? (confidence ${res.body.result.confidence})`);
+        }
+        else if (parseInt(res.body.result.confidence) >= 75 && res.body.result.sentiment === 'Positive') {
+          successHandler(`Hey ${data.from}, Why are you so positive? (confidence ${res.body.result.confidence})`);
+        }
+      }
+    })
   }
 }
 
