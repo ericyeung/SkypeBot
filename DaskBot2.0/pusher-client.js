@@ -12,6 +12,7 @@ const PusherClient = function(botService) {
   
   const channelMotd = pusher.subscribe('motd');
   const channelStreamer = pusher.subscribe('streamer');
+  const channelCsgo = pusher.subscribe('csgo');
   
   function broadcastSkype(successMessage, errorMessage) {
     request
@@ -50,6 +51,11 @@ const PusherClient = function(botService) {
     broadcastSkype(` >> ${data.result.display_name} went offline.`,
                    'Error on grabbing list of subscribers. [streamer_offline]');
   });
+  
+  channelCsgo.bind('open_lobby', function(data) {
+    broadcastSkype(` >> Come join ${data.result.personaname}'s lobby! ${config.API_ENDPOINT + 'csgo/join-game'}`,
+                   'Error on grabbing list of subscribers. [open_lobby]');
+  })
 }
 
 module.exports = PusherClient
