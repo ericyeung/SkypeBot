@@ -27,6 +27,7 @@ function processCommand(data, successHandler, errorHandler) {
     CommandProcessor.handleCommand(data, successHandler, errorHandler);
   }
   else {
+    // Sentiment anaysis service. Uses https://market.mashape.com/vivekn/sentiment-3
     request
     .post('https://community-sentiment.p.mashape.com/text/')
     .set('X-Mashape-Key', config.MASHAPE_KEY)

@@ -128,17 +128,34 @@ const commandTable = {
       }
     });
   },
+  '%hscard': function(args, data, successHandler, errorHandler) {
+    request
+    .get(config.API_ENDPOINT + 'hscard' + '/' + args.join(' '))
+    .end(function(err, res) {
+      if (!err) {
+        const name = res.body.result.name ? `${res.body.result.name}` : ''
+        const text = res.body.result.text ? res.body.result.text.replace('$', '').replace('#', '') : '';
+        const img = res.body.result.imgGold ? `${res.body.result.imgGold}` : ''
+        const mana = res.body.result.cost ? `${res.body.result.cost} Mana` : ''
+        const stats = res.body.result.attack && res.body.result.health ? `${res.body.result.attack}/${res.body.result.health}` : ''
+        successHandler(`${name} - ${text} - ${img} - ${mana} - ${stats}`);
+      }
+      else {
+        errorHandler(`Error: ${err.response.body.error}`);
+      }
+    });
+  },
   '%help': function(args, data, successHandler, errorHandler) {
     successHandler(`List of commands:\n${Object.keys(commandTable).sort().join("\n")}`);
   },
   '%csgo': function(args, data, successHandler, errorHandler) {
-    successHandler('<b>GOGOGOGOGOGGO\nGOGOGOGOGOGGO\nGOGOGOGOGOGGO\nGOGOGOGOGOGGO\n</b>');
+    successHandler('<b>GOGOGOGOGOGGO\nGOGOGOGOGOGGO\nGOGOGOGOGOGGO\nGOGOGOGOGOGGO</b>');
   },
   '%kawkaw': function(args, data, successHandler, errorHandler) {
-    successHandler('<b>KAW AWH KAW AWH KAW AWH\nKAW AWH KAW AWH KAW AWH\nKAW AWH KAW AWH KAW AWH\nKAW AWH KAW AWH KAW AWH\n</b>');
+    successHandler('<b>KAW AWH KAW AWH KAW AWH\nKAW AWH KAW AWH KAW AWH\nKAW AWH KAW AWH KAW AWH\nKAW AWH KAW AWH KAW AWH</b>');
   },
   '%wubwub': function(args, data, successHandler, errorHandler) {
-    successHandler('<i>WUBWUBWUBWUB\nWUBWUBWUBWUB\nWUBWUBWUBWUB\nWUBWUBWUBWUB\n</i>');
+    successHandler('<i>WUBWUBWUBWUB\nWUBWUBWUBWUB\nWUBWUBWUBWUB\nWUBWUBWUBWUB</i>');
   },
   '%watchtogether': function(args, data, successHandler, errorHandler) {
     successHandler('https://instasync.com/r/Windask');
@@ -147,14 +164,28 @@ const commandTable = {
     successHandler('http://www.soulwalrus.club');
   },
   '%bot-train-t': function(args, data, successHandler, errorHandler) {
-    successHandler('\nchangelevel de_dust2\nmp_autoteambalance 0;\nmp_limitteams 0;\nmp_maxrounds 100;\n' +
-                   'bot_kick;\nbot_add_ct;\nbot_add_ct;\nbot_add_ct;\nbot_add_ct;\nbot_add_ct;\nbot_add_ct;\n' +
-                   'bot_add_ct;\nbot_add_ct;\nbot_add_ct; \nbot_add_ct;\nbot_difficulty 3;');
+    request
+    .get(config.API_ENDPOINT + 'csgo/bot-train-t')
+    .end(function(err, res) {
+      if (!err) {
+        successHandler('\n' + res.body.result.join('\n'));
+      }
+      else {
+        errorHandler(`Error: ${err.response.body.error}`);
+      }
+    });
   },
   '%bot-train-ct': function(args, data, successHandler, errorHandler) {
-    successHandler('\nchangelevel de_dust2\nmp_autoteambalance 0;\nmp_limitteams 0;\nmp_maxrounds 100;\n' +
-                   'bot_kick;\nbot_add_t;\nbot_add_t;\nbot_add_t;\nbot_add_t;\nbot_add_t;\nbot_add_t;\n' +
-                   'bot_add_t;\nbot_add_t;\nbot_add_t; \nbot_add_t;\nbot_difficulty 3;');
+    request
+    .get(config.API_ENDPOINT + 'csgo/bot-train-ct')
+    .end(function(err, res) {
+      if (!err) {
+        successHandler('\n' + res.body.result.join('\n'));
+      }
+      else {
+        errorHandler(`Error: ${err.response.body.error}`);
+      }
+    });
   },
 }
 
