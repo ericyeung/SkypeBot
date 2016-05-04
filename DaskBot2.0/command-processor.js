@@ -82,7 +82,7 @@ const commandTable = {
           let currentStreamer = res.body.result[i]
           result += `${currentStreamer.stream.channel.display_name} (Viewers: ${currentStreamer.stream.viewers}) - ${currentStreamer.stream.channel.url} \n`;
         }
-        successHandler(result);
+        result === '' ? successHandler('No streamers are online!') : successHandler(result);
       }
       else {
         errorHandler(`Error: ${err.response.body.error}`);
