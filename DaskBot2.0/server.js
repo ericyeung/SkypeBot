@@ -56,13 +56,24 @@ function handleMessage(bot, data) {
   );
 }
 
-botService.on('personalMessage', (bot, data) => {
+botService.on('message', (bot, data) => {
+  const chat_id = config.BOT_ID === data.to ? data.from : data.to;
+  bot._replyTo = chat_id
+  
+  var entities = [
+        ['&apos;', '\''],
+        ['&amp;', '&'],
+        ['&lt;', '<'],
+        ['&gt;', '>']
+    ];
+  
+  for (let i = 0; i < entities.length; i++) {
+    data.content = data.content.replace(entities[i][0], entities[i][1])
+  }
+
   handleMessage(bot, data);
 });
 
-botService.on('groupMessage', (bot, data) => {
-  handleMessage(bot, data);
-});
 
 const pusher = new Pusher(config.PUSHER_KEY, {
   encrypted: true
