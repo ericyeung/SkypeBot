@@ -1,12 +1,12 @@
 'use strict';
 
-const Pusher = require('pusher-client');
 const request = require('superagent');
 const restify = require('restify');
 const skype = require('skype-sdk');
 
 const CommandProcessor = require('./command-processor');
 const config = require('./config');
+const PusherClient = require('./pusher-client.js');
 
 const botService = new skype.BotService({
     messaging: {
@@ -16,10 +16,6 @@ const botService = new skype.BotService({
         appId: config.APP_ID,
         appSecret: config.APP_SECRET,
     }
-});
-
-botService.on('contactAdded', (bot, data) => {
-    bot.reply(`Hello ${data.fromDisplayName}! I am Daskbot 2.0`, true);
 });
 
 function processCommand(data, successHandler, errorHandler) {
@@ -56,11 +52,8 @@ function handleMessage(bot, data) {
   );
 }
 
-botService.on('message', (bot, data) => {
-  const chat_id = config.BOT_ID === data.to ? data.from : data.to;
-  bot._replyTo = chat_id
-  
-  var entities = [
+function decodeEntities(msg) {
+  const entities = [
         ['&apos;', '\''],
         ['&amp;', '&'],
         ['&lt;', '<'],
@@ -68,60 +61,27 @@ botService.on('message', (bot, data) => {
     ];
   
   for (let i = 0; i < entities.length; i++) {
-    data.content = data.content.replace(entities[i][0], entities[i][1])
+    msg = msg.replace(entities[i][0], entities[i][1]);
   }
+  return msg;
+}
 
+botService.on('contactAdded', (bot, data) => {
+    bot.reply(`Hello ${data.fromDisplayName}! I am Daskbot 2.0`, true);
+});
+
+botService.on('message', (bot, data) => {
+  const chat_id = config.BOT_ID === data.to ? data.from : data.to;
+  bot._replyTo = chat_id;
+  data.content = decodeEntities(data.content);
   handleMessage(bot, data);
 });
 
-
-const pusher = new Pusher(config.PUSHER_KEY, {
-  encrypted: true
-});
-
-const channelMotd = pusher.subscribe('motd');
-const channelStreamer = pusher.subscribe('streamer');
-
-function broadcastSkype(successMessage, errorMessage) {
-  request
-  .get(config.API_ENDPOINT + 'skype')
-  .end(function(err, res) {
-    if (!err) {
-      const result = res.body.result;
-      for (let i = 0; i < result.length; i++) {
-        botService.send(result[i], successMessage);
-      }
-    }
-    else {
-      console.log(errorMessage);
-    }
-  });
-}
-
-channelMotd.bind('motd_update', function(data) {
-  broadcastSkype(` >> Today's message is: ${data.result.message}`,
-                 'Error on grabbing list of subscribers. [motd_update]');
-});
-
-channelStreamer.bind('streamer_added', function(data) {
-  broadcastSkype(` >> ${data.result_added.display_name} added to streamer list!`,
-                 'Error on grabbing list of subscribers. [streamer_online]');
-})
-.bind('streamer_removed', function(data) {
-  broadcastSkype(` >> ${data.result_removed.display_name} removed from streamer list!`,
-                 'Error on grabbing list of subscribers. [streamer_online]');
-})
-.bind('streamer_online', function(data) {
-  broadcastSkype(` >> ${data.result.display_name} is online! - https://www.twitch.tv/${data.result.name}`,
-                 'Error on grabbing list of subscribers. [streamer_online]');
-})
-.bind('streamer_offline', function(data) {
-  broadcastSkype(` >> ${data.result.display_name} went offline.`,
-                 'Error on grabbing list of subscribers. [streamer_offline]');
-});
+// Start pusher client subscriptions.
+PusherClient(botService);
 
 const server = restify.createServer();
-server.use(skype.verifySkypeCert())
+server.use(skype.verifySkypeCert());
 server.post('/v1/chat', skype.messagingHandler(botService));
 const port = process.env.PORT || 9000;
 server.listen(port);

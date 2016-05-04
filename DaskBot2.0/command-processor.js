@@ -1,6 +1,7 @@
 'use strict';
 
 const request = require('superagent');
+
 const config = require('./config');
 
 const commandTable = {
