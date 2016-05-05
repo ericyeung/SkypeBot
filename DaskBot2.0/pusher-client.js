@@ -53,7 +53,7 @@ const PusherClient = function(botService) {
   });
   
   channelCsgo.bind('open_lobby', function(data) {
-    broadcastSkype(` >> Come join ${data.result.personaname}'s lobby! ${config.API_ENDPOINT + 'csgo/join-game'}`,
+    broadcastSkype(` >> Come join ${data.result.personaname}'s lobby! ${config.API_ENDPOINT}csgo/join-game?id=${data.result.steamid}`,
                    'Error on grabbing list of subscribers. [open_lobby]');
   })
 }
