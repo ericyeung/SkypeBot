@@ -188,6 +188,18 @@ const commandTable = {
       }
     });
   },
+  '%music': function(args, data, successHandler, errorHandler) {
+    request
+    .get(config.API_ENDPOINT + 'music')
+    .end(function(err, res) {
+      if (!err) {
+        successHandler(`Give this a listen: ${res.body.result.link} - <b>${res.body.result.name}</b> by ${res.body.result.artists.join(", ")}`);
+      }
+      else {
+        errorHandler(`Error: ${err.response.body.error}`);
+      }
+    });
+  }
 }
 
 module.exports = {

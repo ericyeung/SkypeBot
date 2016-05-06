@@ -24,21 +24,23 @@ function processCommand(data, successHandler, errorHandler) {
   }
   else {
     // New sentiment analysis service by AlchemyAPI
-    if (data.content.trim().split(/\s+/).length > 2) {
-      request
-      .get(`http://gateway-a.watsonplatform.net/calls/text/TextGetTextSentiment?apikey=${config.ALCHEMY_API_KEY}&text=${data.content}&outputMode=json`)
-      .end(function(err, res) {
-        if (!err) {
-          if (parseFloat(res.body.docSentiment.score) <= -0.70 && res.body.docSentiment.type === 'negative') {
-            successHandler(`Hey ${data.from}, Are you feeling negative? (confidence: ${res.body.docSentiment.score})`);
+    if (process.env.NODE_ENV === 'production') {
+      if (data.content.trim().split(/\s+/).length > 2) {
+        request
+        .get(`http://gateway-a.watsonplatform.net/calls/text/TextGetTextSentiment?apikey=${config.ALCHEMY_API_KEY}&text=${data.content}&outputMode=json`)
+        .end(function(err, res) {
+          if (!err) {
+            if (parseFloat(res.body.docSentiment.score) <= -0.70 && res.body.docSentiment.type === 'negative') {
+              successHandler(`Hey ${data.from}, Are you feeling negative?`);
+            }
+            else if (parseFloat(res.body.docSentiment.score) >= 0.70 && res.body.docSentiment.type === 'positive') {
+              successHandler(`Hey ${data.from}, Why are you so positive?`);
+            }
           }
-          else if (parseFloat(res.body.docSentiment.score) >= 0.70 && res.body.docSentiment.type === 'positive') {
-            successHandler(`Hey ${data.from}, Why are you so positive? (confidence: ${res.body.docSentiment.score})`);
-          }
-        }
-      })
-      
+        })
+      }
     }
+
     /*
     // Old Sentiment analysis service. Uses https://market.mashape.com/vivekn/sentiment-3
     request
