@@ -18,14 +18,16 @@ const botService = new skype.BotService({
     }
 });
 
+const messageEditedPattern = new RegExp(/Edited previous message:.*\<.*\/\>/)
+
 function processCommand(data, successHandler, errorHandler) {
   if (data.content.startsWith('%')) {
     CommandProcessor.handleCommand(data, successHandler, errorHandler);
   }
-  else {
+  else {    
     // New sentiment analysis service by AlchemyAPI
     if (process.env.NODE_ENV === 'production') {
-      if (data.content.trim().split(/\s+/).length > 2) {
+      if (data.content.trim().split(/\s+/).length > 2 && !messageEditedPattern.exec(data.content)) {
         request
         .get(`http://gateway-a.watsonplatform.net/calls/text/TextGetTextSentiment?apikey=${config.ALCHEMY_API_KEY}&text=${data.content}&outputMode=json`)
         .end(function(err, res) {
