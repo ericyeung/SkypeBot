@@ -190,7 +190,7 @@ const commandTable = {
   },
   '%music': function(args, data, successHandler, errorHandler) {
     request
-    .get(config.API_ENDPOINT + 'music')
+    .get(config.API_ENDPOINT + 'music?provider=' + args[0])
     .end(function(err, res) {
       if (!err) {
         if (res.body.result.type === 'SPOTIFY') {
