@@ -199,6 +199,9 @@ const commandTable = {
         else if (res.body.result.type === 'SOUNDCLOUD') {
           successHandler(`Give this a listen:\nWeb: ${res.body.result.link}\n<b>${res.body.result.name}</b> by ${res.body.result.artists.join(", ")}`);
         }
+        else {
+          errorHandler(`Error: Undefined error! Contact ryan@soulwalrus.club.`);
+        }
       }
       else {
         errorHandler(`Error: ${err.response.body.error}`);

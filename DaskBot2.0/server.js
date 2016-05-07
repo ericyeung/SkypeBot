@@ -66,24 +66,34 @@ function processCommand(data, successHandler, errorHandler) {
 function handleMessage(bot, data) {
   processCommand(data,
     function(res) {
-      bot.reply(" >> " + res);
+      bot.reply(" >> " + encodeEntities(res));
     },
     function(err) {
-      bot.reply(" >> " + err);
+      bot.reply(" >> " + encodeEntities(err));
     }
   );
 }
 
+function encodeEntities(msg) {
+  const encodeEntitiesMap = [
+        ['&', '&amp;'],
+    ];
+    for (let i = 0; i < encodeEntitiesMap.length; i++) {
+      msg = msg.replace(encodeEntitiesMap[i][0], encodeEntitiesMap[i][1]);
+    }
+    return msg;
+}
+
 function decodeEntities(msg) {
-  const entities = [
+  const decodeEntitiesMap = [
         ['&apos;', '\''],
         ['&amp;', '&'],
         ['&lt;', '<'],
         ['&gt;', '>']
     ];
   
-  for (let i = 0; i < entities.length; i++) {
-    msg = msg.replace(entities[i][0], entities[i][1]);
+  for (let i = 0; i < decodeEntitiesMap.length; i++) {
+    msg = msg.replace(decodeEntitiesMap[i][0], decodeEntitiesMap[i][1]);
   }
   return msg;
 }
