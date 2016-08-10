@@ -6,5 +6,6 @@ module.exports = {
   API_ENDPOINT: 'http://localhost:3000/v1/',
   PUSHER_KEY: 'd7bac04aba128fb95645',
   MASHAPE_KEY: process.env.MASHAPE_KEY,
-  ALCHEMY_API_KEY: process.env.ALCHEMY_API_KEY
+  ALCHEMY_API_KEY: process.env.ALCHEMY_API_KEY,
+  POINT_SECRET: process.env.POINT_SECRET
 }

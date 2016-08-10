@@ -115,6 +115,41 @@ const commandTable = {
       }
     });
   },
+  'points': function(args, data, successHandler, errorHandler) {
+    request
+    .get(config.API_ENDPOINT + 'point')
+    .end(function(err, res) {
+      if (!err) {
+        var resultObj = res.body.result;
+        var resultString = 'Results:\n'
+        for (var key in resultObj) {
+          resultString += `${key}: ${resultObj[key]}\n`;
+        }
+        successHandler(resultString);
+      }
+      else {
+        errorHandler(`Error: ${err.response.body.error}`);        
+      }
+      
+    })
+  },
+  'take': function(args, data, successHandler, errorHandler) {
+    var sendParams = data.address;
+    sendParams.point_id = args[0];
+    sendParams.point_secret = config.POINT_SECRET
+    request
+    .put(config.API_ENDPOINT + 'point')
+    .send(sendParams)
+    .end(function(err, res) {
+      if (!err) {
+        successHandler("Successfully fully captured a point! Type points to see leaderboards.");
+      }
+      else {
+        errorHandler(`Error: ${err.response.body.error}`);        
+      }
+      
+    })
+  },
   'removestreamer': function(args, data, successHandler, errorHandler) {
     request
     .del(config.API_ENDPOINT + 'streamer')
