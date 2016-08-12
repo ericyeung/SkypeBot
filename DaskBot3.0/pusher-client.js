@@ -21,9 +21,9 @@ const PusherClient = function(botService) {
     .get(config.API_ENDPOINT + 'skype2')
     .end(function(err, res) {
       if (!err) {
-        const result = res.body.result;
+        let result = res.body.result;
         for (let i = 0; i < result.length; i++) {
-          var reply = new builder.Message()
+          let reply = new builder.Message()
               .address(result[i])
               .text(successMessage);
           botService.send(reply);
@@ -35,30 +35,38 @@ const PusherClient = function(botService) {
     });
   }
 
-  // botService.dialog('/points', [
-  //   function (session, args) {
-  //     var prompt = builder.Prompts.confirm(session, "A point has appeared! Take it?")
-  //   },
-  //   function (session, results) {
-  //     session.send("You chose '%s'", results.response ? 'yes' : 'no');
-  //   }
-  // ]);
-  // 
-  // function handlePointsSkype(data, successMessage, errorMessage) {
-  //   request
-  //   .get(config.API_ENDPOINT + 'skype2')
-  //   .end(function(err, res) {
-  //     if (!err) {
-  //       const result = res.body.result;
-  //       for (let i = 0; i < result.length; i++) {
-  //         botService.beginDialog(result[i], '/points', data)
-  //       }
-  //     }
-  //     else {
-  //       console.log(errorMessage);
-  //     }
-  //   });
-  // }
+  botService.dialog('/points', [
+    function (session, data) {
+      let card = new builder.HeroCard(session)
+                            .title("A pokemon has appeared!")
+                            .text(`It's ${data.result.friendly_name}!`)
+                            .images([
+                              builder.CardImage.create(session, `https://s3-eu-west-1.amazonaws.com/calpaterson-pokemon/${data.result.friendly_id}.jpeg`)
+                            ])
+                            .buttons([
+                              builder.CardAction.imBack(session, `take ${data.result.id}`, "Catch It!")
+                            ]);
+     let msg = new builder.Message()
+                   .attachments([card]);
+     session.send(msg);
+    },
+  ]);
+
+  function handlePointsSkype(data, successMessage, errorMessage) {
+    request
+    .get(config.API_ENDPOINT + 'skype2')
+    .end(function(err, res) {
+      if (!err) {
+        let result = res.body.result;
+        for (let i = 0; i < result.length; i++) {
+          botService.beginDialog(result[i], '/points', data);
+        }
+      }
+      else {
+        console.log(errorMessage);
+      }
+    });
+  }
   
   channelMotd.bind('motd_update', function(data) {
     broadcastSkype(`-> Today's message is: ${data.result.message}`,
@@ -89,8 +97,9 @@ const PusherClient = function(botService) {
   })
   
   channelPoint.bind('point_created', function(data) {
-    broadcastSkype(`--> There is a point for grabs! Type 'take ${data.result.id}' to grab it before anyone else does!`,
-                   'Error on broadcasting point_created. [point_created]');
+    handlePointsSkype(data,
+                      `--> There is a point for grabs! Type 'take ${data.result.id}' to grab it before anyone else does!`,
+                      'Error on broadcasting point_created. [point_created]');
   })
 }
 
