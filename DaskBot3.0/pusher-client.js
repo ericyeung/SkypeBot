@@ -49,6 +49,7 @@ const PusherClient = function(botService) {
      let msg = new builder.Message()
                    .attachments([card]);
      session.send(msg);
+     session.endDialog();
     },
   ]);
 
