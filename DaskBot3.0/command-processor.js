@@ -133,7 +133,7 @@ const commandTable = {
       
     })
   },
-  'take': function(args, data, successHandler, errorHandler) {
+  'catch': function(args, data, successHandler, errorHandler) {
     var sendParams = data.address;
     sendParams.point_id = args[0];
     sendParams.point_secret = config.POINT_SECRET
@@ -142,7 +142,7 @@ const commandTable = {
     .send(sendParams)
     .end(function(err, res) {
       if (!err) {
-        successHandler("Successfully fully captured a point! Type points to see leaderboards.");
+        successHandler(`${res.body.result.user.name} successfully fully captured a ${res.body.result.friendly_name}! Type points to see leaderboards.`);
       }
       else {
         errorHandler(`Error: ${err.response.body.error}`);        

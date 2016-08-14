@@ -44,7 +44,7 @@ const PusherClient = function(botService) {
                               builder.CardImage.create(session, `https://s3-eu-west-1.amazonaws.com/calpaterson-pokemon/${data.result.friendly_id}.jpeg`)
                             ])
                             .buttons([
-                              builder.CardAction.imBack(session, `take ${data.result.id}`, "Catch It!")
+                              builder.CardAction.imBack(session, `catch ${data.result.id}`, "Catch It!")
                             ]);
      let msg = new builder.Message()
                    .attachments([card]);
