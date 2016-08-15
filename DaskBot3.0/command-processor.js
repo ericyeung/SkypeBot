@@ -45,6 +45,23 @@ const commandTable = {
       }
     });
   },
+  'catch': function(args, data, successHandler, errorHandler) {
+    var sendParams = data.address;
+    sendParams.point_id = args[0];
+    sendParams.point_secret = config.POINT_SECRET
+    request
+    .put(config.API_ENDPOINT + 'point')
+    .send(sendParams)
+    .end(function(err, res) {
+      if (!err) {
+        successHandler(`${res.body.result.user.name} successfully fully captured a ${res.body.result.friendly_name}! ${config.FRONTEND_DOMAIN}pokemon.`);
+      }
+      else {
+        errorHandler(`Error: ${err.response.body.error}`);        
+      }
+      
+    })
+  },
   'message': function(args, data, successHandler, errorHandler) {
     if (!args.length) {
       request
@@ -126,23 +143,6 @@ const commandTable = {
           resultString += `${key}: ${resultObj[key]}\n`;
         }
         successHandler(resultString);
-      }
-      else {
-        errorHandler(`Error: ${err.response.body.error}`);        
-      }
-      
-    })
-  },
-  'catch': function(args, data, successHandler, errorHandler) {
-    var sendParams = data.address;
-    sendParams.point_id = args[0];
-    sendParams.point_secret = config.POINT_SECRET
-    request
-    .put(config.API_ENDPOINT + 'point')
-    .send(sendParams)
-    .end(function(err, res) {
-      if (!err) {
-        successHandler(`${res.body.result.user.name} successfully fully captured a ${res.body.result.friendly_name}! Type points to see leaderboards.`);
       }
       else {
         errorHandler(`Error: ${err.response.body.error}`);        
