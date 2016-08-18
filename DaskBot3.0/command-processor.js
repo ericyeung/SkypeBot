@@ -194,7 +194,7 @@ const commandTable = {
     successHandler('<i>WUBWUBWUBWUB\nWUBWUBWUBWUB\nWUBWUBWUBWUB\nWUBWUBWUBWUB</i>');
   },
   'watchtogether': function(args, data, successHandler, errorHandler) {
-    successHandler('https://instasync.com/r/Windask');
+    successHandler('https://www.reddit.com/r/instasync/comments/4nyxq1/wonder_what_happened_to_instasync_look_here');
   },
   'theclub': function(args, data, successHandler, errorHandler) {
     successHandler('http://www.soulwalrus.club');
