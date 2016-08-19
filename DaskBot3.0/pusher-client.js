@@ -41,7 +41,7 @@ const PusherClient = function(botService) {
                             .title("A pokemon has appeared!")
                             .text(`It's ${data.result.friendly_name}!`)
                             .images([
-                              builder.CardImage.create(session, `https://s3-eu-west-1.amazonaws.com/calpaterson-pokemon/${data.result.friendly_id}.jpeg`)
+                              builder.CardImage.create(session, `http://pokeunlock.com/wp-content/uploads/2015/03/${('000' + data.result.friendly_id).substr(-3)}.png`)
                             ])
                             .buttons([
                               builder.CardAction.imBack(session, `catch ${data.result.id}`, "Catch It!")
