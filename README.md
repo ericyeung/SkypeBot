@@ -1,3 +1,5 @@
+This project is now discontinued since Mircosoft changed how bots behave in chats. May still work with legacy versions of Skype [(<= 7.21)](http://www.skaip.org/skype-7-21-0-100-for-windows-desktop).
+
 Installation
 ==============
 
